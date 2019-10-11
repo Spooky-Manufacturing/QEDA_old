@@ -1,2 +1,0 @@
-from pykicad.module import *
-
