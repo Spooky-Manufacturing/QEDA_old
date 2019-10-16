@@ -21,3 +21,6 @@ QEDA uses standard QASM to design the circuits. Currently the software isn't ent
 
 # Contribute
 If you would like to contribute, it would be much appreciated! We need documentation on our Wiki, logic gates to be designed in kicad, and placement algorithms to be implemented. An IDE may be 
+
+# License
+GPL (c) Spooky Manufacturing, LLC
