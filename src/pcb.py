@@ -1,8 +1,9 @@
-from numpy import array
-from pykicad.pcb import *
-from pykicad.module import *
 import configparser
-from math import ceil as CEIL
+from numpy import array
+
+from pykicad.pcb import Net, Via, Segment, Setup, Layer, NetClass, Pcb
+#from pykicad.module import *
+
 config = configparser.ConfigParser()
 config.read('configs/pcb.conf')
 
@@ -10,12 +11,12 @@ class PCB():
     def __init__(self, title='Quantum PCB Output', comment1='', s='DEFAULT'):
         # Get configurations
         # Define nets
-        vi, vo, gnd = Net('VI'), Net('VO'), Net('GND')
+        vi_net, vo_net, gnd_net = Net('VI'), Net('VO'), Net('GND')
         # Init variables
         self.num_nets = 4
         self.modules = []
         self.net_classes = None
-        self.nets = [vi, vo, gnd]
+        self.nets = [vi_net, vo_net, gnd_net]
         self.vias = []
         self.zones = []
         self.segments = []
@@ -31,7 +32,7 @@ class PCB():
         self.comment1 = comment1
         grid_orig = [int(x/2) for x in self.page_type]
         self.setup = Setup(grid_origin=grid_orig)
-        
+
     def _connect_pad(self, comp, pad, net):
         """Connects components pads electrically
             comp - Module, component
@@ -39,70 +40,71 @@ class PCB():
             net - Net, which net to connect to
         """
         # r1.pads[0].net = vi
-        comp.pads[pad].net=self.nets[net]
-        pass
+        comp.pads[pad].net = self.nets[net]
 
-    def _place_component(self, comp, x, y):
+    def _place_component(self, comp, x_pos, y_pos):
         """Places component comp at position x,y and adds it to PCB list"""
-        comp.at = [x, y]
+        comp.at = [x_pos, y_pos]
         self.modules.append(comp)
 
     def _final_compute(self, comp):
         """Computes the positions of vias for quantum optical components"""
         start = array(comp.pads[1].at) + array(comp.at)
         end = array(comp.pads[0].at) + array(comp.at)
-        pos = start + (end-start)/2
+        pos = start + (end - start) / 2
         self._create_via(pos, self.nets[1].code)
 
         return start, end, pos
 
-    def _compute_positions(self, comp1, comp2, p=[1,0], v=True):
+    def _compute_positions(self, comp1, comp2, pads=[1, 0], create_vias=True):
         """Computes the positions of vias
         comp1 - Module for component 1
         comp2 - Module for component 2
-        p - list of integers of pads, only 2 pads can be connected at a time
-        v - Boolean, create vias as well
+        pads - list of integers of pads, only 2 pads can be connected at a time
+        create_vias - Boolean, create vias as well
         Notes:
             comp1 and comp2 can be the same.
         """
-        start = array(comp1.pads[p[0]].at) + array(comp1.at)
-        end = array(comp2.pads[p[1]].at) + array(comp2.at)
+        start = array(comp1.pads[pads[0]].at) + array(comp1.at)
+        end = array(comp2.pads[pads[1]].at) + array(comp2.at)
         pos = start + (end-start)/2
 
-        if v == True:
+        if create_vias:
             self._create_via(pos, self.nets[1].code)
         return start, end, pos
 
-    def _create_via(self, pos, net=None, s=None, d=None):
+    def _create_via(self, pos, net=None, via_size=None, drill_size=None):
         """Creates the vias
         pos = Position
         net = Net
-        s = Size of via (default 0.8)
-        d = Size of drill (default 0.6)
+        via_size = Size of via (default 0.8)
+        drill_size = Size of drill (default 0.6)
         """
-        if s == None:
-            s = self.via_size
-        if d == None:
-            d = self.drill_size
-        self.vias.append(Via(at=pos.tolist(), size=s, drill=d, net=net))
+        if via_size is None:
+            via_size = self.via_size
+        if drill_size is None:
+            drill_size = self.drill_size
+        self.vias.append(Via(at=pos.tolist(), size=via_size, drill=drill_size, net=net))
 
     def _create_segment(self, start, end, net):
         """Creates segments and appends to the list of segments
         net = connected net
-        
+
         values from self._compute_positions():
-        startz
-        end 
+        start
+        end
         """
-        self.segments.append(Segment(start=start.tolist(), end=end.tolist(),
-                                 net=net.code))
-        pass
+        self.segments.append(Segment(
+            start=start.tolist(),
+            end=end.tolist(),
+            net=net.code))
 
     def _create_zones(self):
         """Creates the zones (layers) of the PCB"""
-        coords = self.coords
-        gndplane_top = Zone(net_name='GND', layer='F.Cu',
-                            polygon=coords, clearance=self.clearance)
+        #coords = self.coords
+        # Unneeded?
+        #gndplane_top = Zone(net_name='GND', layer='F.Cu',
+        #                    polygon=coords, clearance=self.clearance)
 
         layers = [
             Layer('F.Cu'),
@@ -114,9 +116,9 @@ class PCB():
         for layer in ['Mask', 'Paste', 'SilkS', 'CrtYd', 'Fab']:
             for side in ['B', 'F']:
                 layers.append(Layer('%s.%s' % (side, layer), type='user'))
-                
-        self.net_classes = NetClass('default', trace_width=
-                                         self.trace_width, nets=['VI', 'VO', 'GND'])
+        self.net_classes = NetClass('default',
+                                    trace_width=self.trace_width,
+                                    nets=['VI', 'VO', 'GND'])
 
     def _create_pcb(self):
         print('Making PCB')
@@ -135,4 +137,3 @@ class PCB():
         pcb.vias = self.vias
         pcb.zones = self.zones
         pcb.to_file('project')
-    

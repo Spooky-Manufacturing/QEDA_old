@@ -1,50 +1,62 @@
 from primitives import U1, U2, U3
 
+global PI
+PI = 3.14159
+
 class X(U3):
+    global PI
     def __init__(self):
-        self.theta = pi
+        self.theta = PI
         self.phi = 0
-        self.lamda = pi
+        self.lamda = PI
         pass
 
 class Y(U3):
+    global PI
     def __init__(self):
-        self.theta = pi
-        self.phi = pi/2
-        self.lamda = pi/2
+        self.theta = PI
+        self.phi = PI/2
+        self.lamda = PI/2
         pass
 
 class Z(U1):
+    global PI
     def __init__(self):
-        self.lamda = pi
+        self.lamda = PI
         pass
 
 class H(U2):
+    global PI
     def __init__(self):
         self.phi = 0
-        self.lamda = pi
+        self.lamda = PI
 
 class S(U1):
+    global PI
     def __init__(self):
-        self.lamda = pi/2
+        self.lamda = PI/2
 
 class SDG(U1):
+    global PI
     def __init__(self):
-        self.lamda = -pi/2
+        self.lamda = -PI/2
 
 class T(U1):
+    global PI
     def __init__(self):
-        self.lamda = pi/4
+        self.lamda = PI/4
 
 class TDG(U1):
+    global PI
     def __init__(self):
-        self.lamda = -pi/4
+        self.lamda = -PI/4
 
 class RX(U3):
+    global PI
     def __init__(self, theta):
         self.theta = theta
-        self.phi = -pi/2
-        self.lamda = pi/2
+        self.phi = -PI/2
+        self.lamda = PI/2
 
 class RY(U3):
     def __init__(self, theta):

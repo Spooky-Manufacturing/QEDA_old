@@ -63,9 +63,9 @@ class Mirror(Rotation):
         x = angle
         y = angle
         """
-        if !self.isDeg(m[0]):
+        if not self.isDeg(m[0]):
             x = self._rad_to_deg(m[0])
-        if !self.isDeg(m[1]):
+        if not self.isDeg(m[1]):
             y = self._rad_to_deg(m[1])
 
         h = x * cos(self.angle) - y * sin(self.angle)

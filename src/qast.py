@@ -11,8 +11,9 @@ CSIZE = config[SEL]['OpticSize'] # Component size
 MOUNT = config[SEL]['Mounting'] # Mounting Configuration
 LIB = config[SEL]['QLib'] # Component Library
 
-# QCode List
-qcode = [[],[],[]]
+# QCode Dict
+qcode = {
+    }
 
 class End():
     def eval(self):
@@ -63,9 +64,22 @@ class Component():
         self._add_qcomponent(self.qid)
 
     def _add_qcomponent(self, qid):
-        """Adds the components to master list"""
-        qcode[int(qid.eval())].append(self.footprint)
-        print(qcode)
+        """Adds the components to master dictionary"""
+        try:
+            #{ 0: [], 1: [],...}
+            # If the qubit isn't already listed, add new qubit
+            if str(qid.eval()) not in qcode:
+                # create a list and append instruction
+                qcode[str(qid.eval())] = [self.footprint]
+            else:
+                # append instuctions to existing qubit
+                qcode[str(qid.eval())].append(self.footprint)
+            print(qcode)
+        except Exception as e:
+            print("exception", e)
+            pass
+    def eval(self):
+        return qcode
 
 class UQGate(Component):
     """The Unitary Quantum Gates.
@@ -213,3 +227,7 @@ class CU3Gate(CQGate):
 class Measure():
     def __init__(self):
         self.footprint = Module.from_library
+
+__all__ = OpenQASM, Number, Char, BinaryOp, Component, UQGate, CQGate,
+CustomQGate, H, I, S, SDG, T, TDG, X, Y, Z, RX, RY, RZ, CX, CYGate,
+CZGate, CHGate, CCXGate, CRZGate, CU1Gate, CU3Gate, Measure
