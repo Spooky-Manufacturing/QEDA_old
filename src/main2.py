@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 import getopt
 import sys
-from qeda.parser import Parser
+from qeda.parser2 import Parser
 from qeda.lexer import Lexer
 
 def test():

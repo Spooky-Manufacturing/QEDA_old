@@ -1,8 +1,7 @@
 from rply import ParserGenerator
-from qast import OpenQASM, Number, Char, I, S, SDG, T, TDG, X, Y, Z
-from qast import RX, RY, RZ, CX, End, CYGate, CZGate, CHGate, CCXGate
-from qast import Measure
-
+from qeda.qast import OpenQASM, Int, Char, I, S, SDG, T, TDG, X, Y, Z
+from qeda.qast import RX, RY, RZ, CX, End, CYGate, CZGate, CHGate, CCXGate
+from qeda.qast import Measure
 
 class Parser():
     def __init__(self):
@@ -14,7 +13,7 @@ class Parser():
              'Z', 'H', 'SDG', 'TDG', 'S', 'T', 'RX', 'RZ', 'RY', 'CZ', 'CY',
              'CH', 'CCX', 'CRZ', 'CU1', 'CU3', 'PLUS', 'MINUS', 'MUL', 'DIV',
              'POW', 'PI', 'SIN', 'COS', 'TAN', 'EXP', 'LN', 'SQRT',
-             'CHAR', 'ID', 'NUMBER', 'REAL', 'NNINT']
+             'STRING', 'CHAR', 'ID', 'INT', 'FLOAT', 'SPACE']
 
         )
 
@@ -25,21 +24,28 @@ class Parser():
             '''Main function'''
             return p[0]
 
+        @self.parser_generator.production('expression : SPACE')
+        def space(p):
+            '''space'''
+            return ' '
+        
         # Check version of OpenQASM (ToDo)
-        @self.parser_generator.production('expression : OPENQ NUMBER expression')
-        @self.parser_generator.production('expression : OPENQ REAL expression')
+        @self.parser_generator.production('expression : OPENQ SPACE INT SEMI_COLON expression')
+        @self.parser_generator.production('expression : OPENQ SPACE FLOAT SEMI_COLON expression')
         def prog(p):
             '''Defines the version of qasm to use'''
-            x = OpenQASM(1)
+            x = OpenQASM(p[2])
             return x
 
         @self.parser_generator.production('expression : INCLUDE expression SEMI_COLON')
+        @self.parser_generator.production('expression : INCLUDE SPACE STRING SEMI_COLON')
         def include(p):
             '''Defines the INCLUDE command
             Will be implemented.
             Priority: LOW
             '''
-            raise NotImplementedError('Error', p[0], ' not implemented')
+            pass
+            #raise NotImplementedError('Error', p[0], ' not implemented')
 
         @self.parser_generator.production('''expression : GATE expression PAREN_OPEN
 expression PAREN_CLOSE expression OPEN_BRACKET expression CLOSE_BRACKET''')
@@ -91,8 +97,7 @@ expression PAREN_CLOSE expression OPEN_BRACKET expression CLOSE_BRACKET''')
             '''
             raise NotImplementedError('Error', p[0], ' not implemented')
 
-        @self.parser_generator.production('''expression : QREG expression OPEN_BRACKET
-expression CLOSE_BRACKET SEMI_COLON''')
+        @self.parser_generator.production('expression : QREG SPACE CHAR OPEN_BRACKET INT CLOSE_BRACKET SEMI_COLON')
         def qreg(p):
             '''Defines the Quatum Register.
             Will be implemented when physically possible.
@@ -296,10 +301,10 @@ expression COMMA expression SEMI_COLON expression''')
             return CCXGate(p[1], [p[3], p[5]])
 
         # Basic Definitions
-        @self.parser_generator.production('expression : NUMBER')
-        def number(p):
-            '''Defines the number primitive'''
-            return Number(p[0].value)
+        @self.parser_generator.production('expression : INT')
+        def int(p):
+            '''Defines the Integer primitive'''
+            return Int(p[0].value)
 
         @self.parser_generator.production('expression : CHAR')
         def char(p):
@@ -314,6 +319,7 @@ expression COMMA expression SEMI_COLON expression''')
         @self.parser_generator.error
         def error_handle(token):
             '''"Dirty" error handling'''
+            print(token)
             raise ValueError(token)
 
     def get_parser(self):

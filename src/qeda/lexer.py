@@ -5,9 +5,11 @@ class Lexer():
         self.lexer = LexerGenerator()
 
     def _add_tokens(self):
+        #String support
+        self.lexer.add('STRING', r'".*"')
+        self.lexer.add('STRING', r"'.*'")
         # Specification
-        self.lexer.add('STRING', r"'(.*?)'")
-        self.lexer.add('OPENQ', r'(?i)OPENQASM')
+        self.lexer.add('OPENQASM', r'(?i)OPENQASM')
         # Includes
         self.lexer.add('INCLUDE', r'(?i)include')
         # Logic
@@ -21,6 +23,9 @@ class Lexer():
         self.lexer.add('QREG', r'(?i)qreg')
         self.lexer.add('CREG', r'(?i)creg')
         self.lexer.add('GATE', r'(?i)gate')
+        # Gate primitives
+        self.lexer.add('U', r'U')
+        self.lexer.add('CX', r'(?i)cx')
         # Punctuation
         self.lexer.add('PAREN_OPEN', r'\(')
         self.lexer.add('PAREN_CLOSE', r'\)')
@@ -35,31 +40,6 @@ class Lexer():
         self.lexer.add('COMMA', r',')
         self.lexer.add('QUOTE', r'"')
         self.lexer.add('QUOTE', r"'")
-        # Gates
-        self.lexer.add('RX', r'(?i)rx')
-        self.lexer.add('RZ', r'(?i)rz')
-        self.lexer.add('RY', r'(?i)ry')
-        self.lexer.add('CZ', r'(?i)cz')
-        self.lexer.add('CY', r'(?i)cy')
-        self.lexer.add('CH', r'(?i)ch')
-        self.lexer.add('CCX', r'(?i)ccx')
-        self.lexer.add('CRZ', r'(?i)crz')
-        self.lexer.add('CU1', r'(?i)cu1')
-        self.lexer.add('CU3', r'(?i)cu3')
-
-        self.lexer.add('U3', r'(?i)u3')
-        self.lexer.add('U2', r'(?i)u2')
-        self.lexer.add('U1', r'(?i)u1')
-        self.lexer.add('CX', r'(?i)CX')
-        self.lexer.add('I', r'(?i)id')
-        self.lexer.add('X', r'X ')
-        self.lexer.add('Y', r'Y ')
-        self.lexer.add('Z', r'Z ')
-        self.lexer.add('H', r'H ')
-        self.lexer.add('SDG', r'(?i)sdg')
-        self.lexer.add('TDG', r'(?i)tdg')
-        self.lexer.add('S', r'S ')
-        self.lexer.add('T', r'T ')
         # Math
         self.lexer.add('EQU', r'\=')
         self.lexer.add('PLUS', r'\+')
@@ -74,16 +54,18 @@ class Lexer():
         self.lexer.add('EXP', r'(?i)exp')
         self.lexer.add('LN', r'(?i)ln')
         self.lexer.add('SQRT', r'(?i)sqrt')
-        #Chars
-        self.lexer.add('CHAR', r'(?i)[a-z]')
-        self.lexer.add('ID', r'[a-z][A-Za-z0-9_]*')
+        #ID support
+        self.lexer.add('ID', r'[a-z][A-Za-z0-9_]*|[A-Z][A-Za-z0-9_]*')
         # Numbers
-        self.lexer.add('FLOAT', r'\d+\.\d+')
-        self.lexer.add('INT', r'\d+')
-        self.lexer.add('SPACE', r'\s+')
+        self.lexer.add('REAL', r'([0-9]+\.[0-9]*|[0-9]*\.[0-9]+)([eE][-+]?[0-9]+)?')
+        self.lexer.add('INT', r'[1-9]+[0-9]*|0')
+        # Character support
+        #self.lexer.add('CHARS', r'[A-Za-z]*')
+        self.lexer.add('DOT', r'\.')
+
 
         # Other Chars
-        #self.lexer.ignore('\s+')
+        self.lexer.ignore('\s+')
         self.lexer.ignore(r'\//.*//')
         self.lexer.ignore(r'\\\.*\\')
 
