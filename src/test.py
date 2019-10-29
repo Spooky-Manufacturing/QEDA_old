@@ -2,7 +2,7 @@
 import getopt
 import sys
 from qeda.parser2 import Parser
-from qeda.lexer2 import Lexer
+from qeda.lexer import Lexer
 
 def test():
     """Runs the test suite"""
@@ -29,7 +29,8 @@ def run(infile, outfile, processors, threads):
     print('run:', infile, outfile, processors, threads)
     with open(infile, 'r') as f:
         lexer = Lexer().get_lexer()
-        tokens = lexer.lex(''.join([x for x in f.readlines()]))
+        lines = ''.join([x for x in f.readlines()])
+        tokens = lexer.lex(lines)
     page = Parser()
     page.parse()
     parser = page.get_parser()

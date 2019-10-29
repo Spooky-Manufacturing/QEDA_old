@@ -1,4 +1,7 @@
 from rply import ParserGenerator
+from qeda.qast import OpenQASM, Int, Char, I, S, SDG, T, TDG, X, Y, Z
+from qeda.qast import RX, RY, RZ, CX, End, CYGate, CZGate, CHGate, CCXGate
+from qeda.qast import Measure
 
 class Parser():
 
@@ -14,7 +17,6 @@ class Parser():
         )
 
     def parse(self):
-    
         @self.parser_generator.production('main : OPENQASM real SEMI_COLON program')
         @self.parser_generator.production('main : OPENQASM real SEMI_COLON include program')
         def main(p):
@@ -44,7 +46,7 @@ class Parser():
         def statement(p):
             print("Creating statement!")
             pass
-       
+
         @self.parser_generator.production('decl : QREG id OPEN_BRACKET int CLOSE_BRACKET SEMI_COLON')
         @self.parser_generator.production('decl : CREG id OPEN_BRACKET int CLOSE_BRACKET SEMI_COLON')
         def decl(p):
@@ -73,16 +75,59 @@ class Parser():
 
         @self.parser_generator.production('uop : U PAREN_OPEN explist PAREN_CLOSE argument SEMI_COLON')
         @self.parser_generator.production('uop : CX argument COMMA argument SEMI_COLON')
+        @self.parser_generator.production('uop : CX anylist SEMI_COLON')
         @self.parser_generator.production('uop : int anylist SEMI_COLON')
         @self.parser_generator.production('uop : int PAREN_OPEN PAREN_CLOSE anylist SEMI_COLON')
         @self.parser_generator.production('uop : int PAREN_OPEN explist PAREN_CLOSE anylist SEMI_COLON')
+        @self.parser_generator.production('uop : id anylist SEMI_COLON') # Adds support for custom gates: ccx a,b,c;
+        @self.parser_generator.production('uop : id id SEMI_COLON') # supports: y b;
+        @self.parser_generator.production('uop : id id OPEN_BRACKET int CLOSE_BRACKET SEMI_COLON') # supports X a[1];
         def uop(p):
             print('setting uop')
-            if p[0].name == 'U':
+            if p[0].name in ('U', 'u'):
                 print('U gate!')
                 return p
-            elif p[0].name == 'CX':
-                print('Controlled Gate!')
+            elif p[0].name.lower() == 'h':
+                print("Hadamard!")
+                return H(p[1])
+            elif p[0].name.lower() == 'i':
+                print("Identity!")
+                return I(p[1])
+            elif p[0].name.lower() == 's':
+                print("S Gate")
+                return S(p[1])
+            elif p[0].name.lower() == 'sdg':
+                print("SDG Gate")
+                return SDG(p[1])
+            elif p[0].name.lower() == 't':
+                print("T Gate")
+                return T(p[1])
+            elif p[0].name.lower() == 'tdg':
+                print("TDG Gate")
+                return TDG(p[1])
+            elif p[0].name.lower() == 'x':
+                print("X Gate")
+                return X(p[1])
+            elif p[0].name.lower() == 'y':
+                print("Y Gate")
+                return Y(p[1])
+            elif p[0].name.lower() == 'z':
+                print("Z Gate")
+                return Z(p[1])
+            elif p[0].name.lower() == 'rx':
+                print("RX Gate")
+                return RX(p[1])
+            elif p[0].name.lower() == 'ry':
+                print("RY Gate")
+                return RY(p[1])
+            elif p[0].name.lower() == 'rz':
+                print("RZ Gate")
+                return RZ(p[1])
+            elif p[0].name == 'ID':
+                if p[0].value in ('CCX', 'ccx'):
+                    print('Controlled Controlled Gate!')
+                else:
+                    print(p[0])
                 return p
             pass
 
@@ -106,6 +151,7 @@ class Parser():
         @self.parser_generator.production('argument : id')
         @self.parser_generator.production('argument : real')
         @self.parser_generator.production('argument : INT')
+        @self.parser_generator.production('argument : anylist')
         def argument(p):
             return p[0]
 
@@ -139,6 +185,7 @@ class Parser():
 
         @self.parser_generator.production('id : ID ')
         def id(p):
+            print([p[x].value for x in range(len(p))])
             print('setting id', p[0].value)
             return p[0]
 

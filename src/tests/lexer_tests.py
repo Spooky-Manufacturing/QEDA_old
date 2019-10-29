@@ -1,7 +1,6 @@
 import unittest
 from context import Lexer
 
-
 class LexerTests(unittest.TestCase):
 
     def setUp(self):
@@ -16,7 +15,7 @@ class LexerTests(unittest.TestCase):
             print(token.name, token.value)
             self.assertEqual(token.name, equals[i])
             i += 1
-    
+
     def test_comments(self):
         # comments should be completely ignored
         text ='//this is a comment in qasm//h1'
@@ -39,7 +38,7 @@ class LexerTests(unittest.TestCase):
     def test_specification(self):
         text = 'OPENQASM: 2.0;'
         tokens = self._get_tokens(text)
-        equals = ['OPENQ' , 'COLON', 'REAL', 'SEMI_COLON']
+        equals = ['OPENQASM' , 'COLON', 'REAL', 'SEMI_COLON']
         self._tokens_equ(tokens, equals)
 
     def test_include(self):
@@ -79,7 +78,7 @@ class LexerTests(unittest.TestCase):
         tokens = self._get_tokens(text)
         equals = ['MEASURE', 'ID', 'ASSIGN_TO', 'ID']
         self._tokens_equ(tokens, equals)
-        
+
     def test_reset(self):
         text = 'reset q[0];'
         tokens = self._get_tokens(text)
