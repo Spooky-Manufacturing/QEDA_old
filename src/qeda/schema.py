@@ -1,0 +1,4 @@
+
+
+def SchemaBuilder(qcode):
+    pass

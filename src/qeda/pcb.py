@@ -1,8 +1,10 @@
+#!/usr/bin/python3
 import configparser
 from numpy import array
+from math import ceil as CEIL
 
 from pykicad.pcb import Net, Via, Segment, Setup, Layer, NetClass, Pcb
-#from pykicad.module import *
+from pykicad.module import *
 
 config = configparser.ConfigParser()
 config.read('configs/pcb.conf')
@@ -137,3 +139,94 @@ class PCB():
         pcb.vias = self.vias
         pcb.zones = self.zones
         pcb.to_file('project')
+        
+        
+class PCBBuilder:
+    def __init__(self,qcode={}):
+        self.pcb=PCB()
+        self.qcode={}
+        for i in range(1,len(qcode)+1):
+            for each in qcode[i]:
+                print(each[0],each[1])
+                if i not in self.qcode.keys():
+                    self.qcode[i] = [Module.from_library(each[0],each[1])]
+                else:
+                    self.qcode[i].append(Module.from_library(each[0],each[1]))
+        print("PCB BUILDER QCODE")
+        print(qcode)
+        self._autoplace_()
+        self.pcb._create_zones()
+        self.pcb._create_pcb()
+    def _find_max_x(self, comp):
+        """Return the maximal X size of a component as an interger"""
+        max_x = 0
+        geo = comp.geometry()
+        x = [each for each in geo]
+        for each in x:
+            if each.start == None and each.end != None:
+                y = abs(0-each.end[0])
+            elif each.end == None and each.start != None:
+                y = abs(each.start)
+            elif each.start == each.end == None:
+                pass
+            else:
+                y = abs(each.start[0] - each.end[0])
+                if y > max_x:
+                    max_x = y
+        return CEIL(max_x)
+
+    def _find_max_y(self, comp):
+        """Return the maximal X size of a component as an interger"""
+        max_y = 0
+        geo = comp.geometry()
+        x = [each for each in geo]
+        for each in x:
+            if each.start == None and each.end != None:
+                y = abs(0 - each.end)
+            if each.end == None and each.start != None:
+                y = abs(each.start)
+            elif each.start == each.end == None:
+                pass
+            else:
+                y = abs(each.start[1] - each.end[1])
+                if y > max_y:
+                    max_y = y
+        return CEIL(max_y)
+
+    def _find_maxes(self, comp):
+        """Returns the maximal x and y value of a component (starting at 0,0)"""
+        x = self._find_max_x(comp)
+        y = self._find_max_y(comp)
+        return int(x), int(y)
+        
+    def _place_component(self, comp, x, y):
+        """Places the component at x,y"""
+        print("Placing component {} at ({}, {})".format(comp.name, x,y))
+        self.pcb._place_component(comp, x, y)
+        print("Component {} is at {}".format(comp.name, comp.at))
+        
+    def _autoplace_(self):
+        pos = {
+            'X': 0,
+            'Y': 0}
+        cur_x = 0
+        cur_y = 0
+        for qubit, gates in self.qcode.items():
+            print("Creating qubit {}".format(qubit))
+            # Iterate over qubits
+            for i in range(len(gates)):
+                # Iterate over gates
+                # Find maxes
+                x, y = self._find_maxes(gates[i])
+                # Place component
+                cur_x += x
+                pos['X'] = cur_x
+                if y > cur_y:            
+                    cur_y = y
+                self._place_component(gates[i], pos['X'], pos['Y'])
+            cur_x = 0
+            pos['X'] = cur_x
+            pos['Y'] += cur_y
+
+if __name__ == '__main__':
+    x = PCB()

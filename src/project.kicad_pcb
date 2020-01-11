@@ -1,0 +1,732 @@
+
+(kicad_pcb 
+    (version 1) 
+    (host pykicad x.x.x) 
+    (general 
+        (nets 4)) 
+    (page User 20.000000 20.000000) 
+    (title_block 
+        (title "Quantum PCB Output") (comment 1 ""))  
+(setup 
+    (grid_origin 10 10)) 
+(net 1 VI) 
+(net 2 VO) 
+(net 3 GND) 
+(net_class default "" 
+    (trace_width 1) (add_net VI) (add_net VO) (add_net GND)) 
+(module igate-macro 
+    (layer F.Cu) 
+    (tedit 5DC2D8F7) 
+    (at 5 0) 
+(fp_text reference IGate 
+    (at 0.0000000000 3.5000000000) 
+    (layer F.SilkS) 
+    (effects 
+        (font 
+            (size 1.0000000000 1.0000000000) 
+            (thickness 0.1500000000)))) 
+(fp_text value igate-macro 
+    (at 0.2000000000 -3.4000000000) 
+    (layer F.Fab) 
+    (effects 
+        (font 
+            (size 1.0000000000 1.0000000000) 
+            (thickness 0.1500000000)))) 
+(fp_line 
+    (start -2.5000000000 -2.5000000000) 
+    (end 2.5000000000 -2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start 2.5000000000 -2.5000000000) 
+    (end 2.5000000000 2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start 2.5000000000 2.5000000000) 
+    (end -2.5000000000 2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start -2.5000000000 2.5000000000) 
+    (end -2.5000000000 -2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000))) 
+(module hgate-macro 
+    (layer F.Cu) 
+    (tedit 5DC25ABA) 
+    (at 10 0) 
+(fp_text reference HGate 
+    (at 0.0000000000 3.5000000000) 
+    (layer F.SilkS) 
+    (effects 
+        (font 
+            (size 1.0000000000 1.0000000000) 
+            (thickness 0.1500000000)))) 
+(fp_text value hgate-macro 
+    (at 0.2000000000 -3.4000000000) 
+    (layer F.Fab) 
+    (effects 
+        (font 
+            (size 1.0000000000 1.0000000000) 
+            (thickness 0.1500000000)))) 
+(fp_line 
+    (start -2.5000000000 -2.5000000000) 
+    (end 2.5000000000 -2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start 2.5000000000 -2.5000000000) 
+    (end 2.5000000000 2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start 2.5000000000 2.5000000000) 
+    (end -2.5000000000 2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start -2.5000000000 2.5000000000) 
+    (end -2.5000000000 -2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start 2.5000000000 -2.5000000000) 
+    (end -2.5000000000 2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(pad 1 smd rect 
+    (size 0.5000000000 0.5000000000) 
+    (at 0.0000000000 0.0000000000) 
+    (layers F.Cu F.Paste F.Mask))) 
+(module xgate-macro 
+    (layer F.Cu) 
+    (tedit 5DC2D8D7) 
+    (at 15 0) 
+(fp_text reference XGate 
+    (at 0.1000000000 -0.2000000000) 
+    (layer F.SilkS) 
+    (effects 
+        (font 
+            (size 1.0000000000 1.0000000000) 
+            (thickness 0.1500000000)))) 
+(fp_text value xgate-macro 
+    (at 0.0000000000 -11.8000000000) 
+    (layer F.Fab) 
+    (effects 
+        (font 
+            (size 1.0000000000 1.0000000000) 
+            (thickness 0.1500000000)))) 
+(fp_line 
+    (start -2.5000000000 -2.5000000000) 
+    (end 2.5000000000 -2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start 2.5000000000 -2.5000000000) 
+    (end 2.5000000000 2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start 2.5000000000 2.5000000000) 
+    (end -2.5000000000 2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start -2.5000000000 2.5000000000) 
+    (end -2.5000000000 -2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start -2.5000000000 -2.5000000000) 
+    (end 2.5000000000 2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start -1.3000000000 -5.9000000000) 
+    (end 1.6000000000 -3.0000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start -1.9000000000 3.1000000000) 
+    (end 1.0000000000 6.0000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start 2.5000000000 2.5000000000) 
+    (end 5.4000000000 -0.4000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start 2.5000000000 6.0000000000) 
+    (end 5.4000000000 3.1000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start 2.5000000000 -2.5000000000) 
+    (end 5.4000000000 -5.4000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000))) 
+(module igate-macro 
+    (layer F.Cu) 
+    (tedit 5DC2D8F7) 
+    (at 20 0) 
+(fp_text reference IGate 
+    (at 0.0000000000 3.5000000000) 
+    (layer F.SilkS) 
+    (effects 
+        (font 
+            (size 1.0000000000 1.0000000000) 
+            (thickness 0.1500000000)))) 
+(fp_text value igate-macro 
+    (at 0.2000000000 -3.4000000000) 
+    (layer F.Fab) 
+    (effects 
+        (font 
+            (size 1.0000000000 1.0000000000) 
+            (thickness 0.1500000000)))) 
+(fp_line 
+    (start -2.5000000000 -2.5000000000) 
+    (end 2.5000000000 -2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start 2.5000000000 -2.5000000000) 
+    (end 2.5000000000 2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start 2.5000000000 2.5000000000) 
+    (end -2.5000000000 2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start -2.5000000000 2.5000000000) 
+    (end -2.5000000000 -2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000))) 
+(module xgate-macro 
+    (layer F.Cu) 
+    (tedit 5DC2D8D7) 
+    (at 25 0) 
+(fp_text reference XGate 
+    (at 0.1000000000 -0.2000000000) 
+    (layer F.SilkS) 
+    (effects 
+        (font 
+            (size 1.0000000000 1.0000000000) 
+            (thickness 0.1500000000)))) 
+(fp_text value xgate-macro 
+    (at 0.0000000000 -11.8000000000) 
+    (layer F.Fab) 
+    (effects 
+        (font 
+            (size 1.0000000000 1.0000000000) 
+            (thickness 0.1500000000)))) 
+(fp_line 
+    (start -2.5000000000 -2.5000000000) 
+    (end 2.5000000000 -2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start 2.5000000000 -2.5000000000) 
+    (end 2.5000000000 2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start 2.5000000000 2.5000000000) 
+    (end -2.5000000000 2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start -2.5000000000 2.5000000000) 
+    (end -2.5000000000 -2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start -2.5000000000 -2.5000000000) 
+    (end 2.5000000000 2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start -1.3000000000 -5.9000000000) 
+    (end 1.6000000000 -3.0000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start -1.9000000000 3.1000000000) 
+    (end 1.0000000000 6.0000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start 2.5000000000 2.5000000000) 
+    (end 5.4000000000 -0.4000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start 2.5000000000 6.0000000000) 
+    (end 5.4000000000 3.1000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start 2.5000000000 -2.5000000000) 
+    (end 5.4000000000 -5.4000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000))) 
+(module igate-macro 
+    (layer F.Cu) 
+    (tedit 5DC2D8F7) 
+    (at 5 5) 
+(fp_text reference IGate 
+    (at 0.0000000000 3.5000000000) 
+    (layer F.SilkS) 
+    (effects 
+        (font 
+            (size 1.0000000000 1.0000000000) 
+            (thickness 0.1500000000)))) 
+(fp_text value igate-macro 
+    (at 0.2000000000 -3.4000000000) 
+    (layer F.Fab) 
+    (effects 
+        (font 
+            (size 1.0000000000 1.0000000000) 
+            (thickness 0.1500000000)))) 
+(fp_line 
+    (start -2.5000000000 -2.5000000000) 
+    (end 2.5000000000 -2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start 2.5000000000 -2.5000000000) 
+    (end 2.5000000000 2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start 2.5000000000 2.5000000000) 
+    (end -2.5000000000 2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start -2.5000000000 2.5000000000) 
+    (end -2.5000000000 -2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000))) 
+(module xgate-macro 
+    (layer F.Cu) 
+    (tedit 5DC2D8D7) 
+    (at 10 5) 
+(fp_text reference XGate 
+    (at 0.1000000000 -0.2000000000) 
+    (layer F.SilkS) 
+    (effects 
+        (font 
+            (size 1.0000000000 1.0000000000) 
+            (thickness 0.1500000000)))) 
+(fp_text value xgate-macro 
+    (at 0.0000000000 -11.8000000000) 
+    (layer F.Fab) 
+    (effects 
+        (font 
+            (size 1.0000000000 1.0000000000) 
+            (thickness 0.1500000000)))) 
+(fp_line 
+    (start -2.5000000000 -2.5000000000) 
+    (end 2.5000000000 -2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start 2.5000000000 -2.5000000000) 
+    (end 2.5000000000 2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start 2.5000000000 2.5000000000) 
+    (end -2.5000000000 2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start -2.5000000000 2.5000000000) 
+    (end -2.5000000000 -2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start -2.5000000000 -2.5000000000) 
+    (end 2.5000000000 2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start -1.3000000000 -5.9000000000) 
+    (end 1.6000000000 -3.0000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start -1.9000000000 3.1000000000) 
+    (end 1.0000000000 6.0000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start 2.5000000000 2.5000000000) 
+    (end 5.4000000000 -0.4000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start 2.5000000000 6.0000000000) 
+    (end 5.4000000000 3.1000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start 2.5000000000 -2.5000000000) 
+    (end 5.4000000000 -5.4000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000))) 
+(module hgate-macro 
+    (layer F.Cu) 
+    (tedit 5DC25ABA) 
+    (at 15 5) 
+(fp_text reference HGate 
+    (at 0.0000000000 3.5000000000) 
+    (layer F.SilkS) 
+    (effects 
+        (font 
+            (size 1.0000000000 1.0000000000) 
+            (thickness 0.1500000000)))) 
+(fp_text value hgate-macro 
+    (at 0.2000000000 -3.4000000000) 
+    (layer F.Fab) 
+    (effects 
+        (font 
+            (size 1.0000000000 1.0000000000) 
+            (thickness 0.1500000000)))) 
+(fp_line 
+    (start -2.5000000000 -2.5000000000) 
+    (end 2.5000000000 -2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start 2.5000000000 -2.5000000000) 
+    (end 2.5000000000 2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start 2.5000000000 2.5000000000) 
+    (end -2.5000000000 2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start -2.5000000000 2.5000000000) 
+    (end -2.5000000000 -2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start 2.5000000000 -2.5000000000) 
+    (end -2.5000000000 2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(pad 1 smd rect 
+    (size 0.5000000000 0.5000000000) 
+    (at 0.0000000000 0.0000000000) 
+    (layers F.Cu F.Paste F.Mask))) 
+(module igate-macro 
+    (layer F.Cu) 
+    (tedit 5DC2D8F7) 
+    (at 20 5) 
+(fp_text reference IGate 
+    (at 0.0000000000 3.5000000000) 
+    (layer F.SilkS) 
+    (effects 
+        (font 
+            (size 1.0000000000 1.0000000000) 
+            (thickness 0.1500000000)))) 
+(fp_text value igate-macro 
+    (at 0.2000000000 -3.4000000000) 
+    (layer F.Fab) 
+    (effects 
+        (font 
+            (size 1.0000000000 1.0000000000) 
+            (thickness 0.1500000000)))) 
+(fp_line 
+    (start -2.5000000000 -2.5000000000) 
+    (end 2.5000000000 -2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start 2.5000000000 -2.5000000000) 
+    (end 2.5000000000 2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start 2.5000000000 2.5000000000) 
+    (end -2.5000000000 2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start -2.5000000000 2.5000000000) 
+    (end -2.5000000000 -2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000))) 
+(module xgate-macro 
+    (layer F.Cu) 
+    (tedit 5DC2D8D7) 
+    (at 5 10) 
+(fp_text reference XGate 
+    (at 0.1000000000 -0.2000000000) 
+    (layer F.SilkS) 
+    (effects 
+        (font 
+            (size 1.0000000000 1.0000000000) 
+            (thickness 0.1500000000)))) 
+(fp_text value xgate-macro 
+    (at 0.0000000000 -11.8000000000) 
+    (layer F.Fab) 
+    (effects 
+        (font 
+            (size 1.0000000000 1.0000000000) 
+            (thickness 0.1500000000)))) 
+(fp_line 
+    (start -2.5000000000 -2.5000000000) 
+    (end 2.5000000000 -2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start 2.5000000000 -2.5000000000) 
+    (end 2.5000000000 2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start 2.5000000000 2.5000000000) 
+    (end -2.5000000000 2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start -2.5000000000 2.5000000000) 
+    (end -2.5000000000 -2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start -2.5000000000 -2.5000000000) 
+    (end 2.5000000000 2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start -1.3000000000 -5.9000000000) 
+    (end 1.6000000000 -3.0000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start -1.9000000000 3.1000000000) 
+    (end 1.0000000000 6.0000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start 2.5000000000 2.5000000000) 
+    (end 5.4000000000 -0.4000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start 2.5000000000 6.0000000000) 
+    (end 5.4000000000 3.1000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start 2.5000000000 -2.5000000000) 
+    (end 5.4000000000 -5.4000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000))) 
+(module hgate-macro 
+    (layer F.Cu) 
+    (tedit 5DC25ABA) 
+    (at 10 10) 
+(fp_text reference HGate 
+    (at 0.0000000000 3.5000000000) 
+    (layer F.SilkS) 
+    (effects 
+        (font 
+            (size 1.0000000000 1.0000000000) 
+            (thickness 0.1500000000)))) 
+(fp_text value hgate-macro 
+    (at 0.2000000000 -3.4000000000) 
+    (layer F.Fab) 
+    (effects 
+        (font 
+            (size 1.0000000000 1.0000000000) 
+            (thickness 0.1500000000)))) 
+(fp_line 
+    (start -2.5000000000 -2.5000000000) 
+    (end 2.5000000000 -2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start 2.5000000000 -2.5000000000) 
+    (end 2.5000000000 2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start 2.5000000000 2.5000000000) 
+    (end -2.5000000000 2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start -2.5000000000 2.5000000000) 
+    (end -2.5000000000 -2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start 2.5000000000 -2.5000000000) 
+    (end -2.5000000000 2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(pad 1 smd rect 
+    (size 0.5000000000 0.5000000000) 
+    (at 0.0000000000 0.0000000000) 
+    (layers F.Cu F.Paste F.Mask))) 
+(module xgate-macro 
+    (layer F.Cu) 
+    (tedit 5DC2D8D7) 
+    (at 5 15) 
+(fp_text reference XGate 
+    (at 0.1000000000 -0.2000000000) 
+    (layer F.SilkS) 
+    (effects 
+        (font 
+            (size 1.0000000000 1.0000000000) 
+            (thickness 0.1500000000)))) 
+(fp_text value xgate-macro 
+    (at 0.0000000000 -11.8000000000) 
+    (layer F.Fab) 
+    (effects 
+        (font 
+            (size 1.0000000000 1.0000000000) 
+            (thickness 0.1500000000)))) 
+(fp_line 
+    (start -2.5000000000 -2.5000000000) 
+    (end 2.5000000000 -2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start 2.5000000000 -2.5000000000) 
+    (end 2.5000000000 2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start 2.5000000000 2.5000000000) 
+    (end -2.5000000000 2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start -2.5000000000 2.5000000000) 
+    (end -2.5000000000 -2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start -2.5000000000 -2.5000000000) 
+    (end 2.5000000000 2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start -1.3000000000 -5.9000000000) 
+    (end 1.6000000000 -3.0000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start -1.9000000000 3.1000000000) 
+    (end 1.0000000000 6.0000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start 2.5000000000 2.5000000000) 
+    (end 5.4000000000 -0.4000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start 2.5000000000 6.0000000000) 
+    (end 5.4000000000 3.1000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start 2.5000000000 -2.5000000000) 
+    (end 5.4000000000 -5.4000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000))) 
+(module zgate-macro 
+    (layer F.Cu) 
+    (tedit 5DC2D8AC) 
+    (at 10 15) 
+(fp_text reference ZGate 
+    (at 0.0000000000 3.5000000000) 
+    (layer F.SilkS) 
+    (effects 
+        (font 
+            (size 1.0000000000 1.0000000000) 
+            (thickness 0.1500000000)))) 
+(fp_text value zgate-macro 
+    (at 0.2000000000 -3.4000000000) 
+    (layer F.Fab) 
+    (effects 
+        (font 
+            (size 1.0000000000 1.0000000000) 
+            (thickness 0.1500000000)))) 
+(fp_text user Pi 
+    (at -0.2000000000 0.0000000000) 
+    (layer F.SilkS) 
+    (effects 
+        (font 
+            (size 1.0000000000 1.0000000000) 
+            (thickness 0.1500000000)))) 
+(fp_line 
+    (start -2.5000000000 -2.5000000000) 
+    (end 2.5000000000 -2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start 2.5000000000 -2.5000000000) 
+    (end 2.5000000000 2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start 2.5000000000 2.5000000000) 
+    (end -2.5000000000 2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start -2.5000000000 2.5000000000) 
+    (end -2.5000000000 -2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000))) 
+(module igate-macro 
+    (layer F.Cu) 
+    (tedit 5DC2D8F7) 
+    (at 5 20) 
+(fp_text reference IGate 
+    (at 0.0000000000 3.5000000000) 
+    (layer F.SilkS) 
+    (effects 
+        (font 
+            (size 1.0000000000 1.0000000000) 
+            (thickness 0.1500000000)))) 
+(fp_text value igate-macro 
+    (at 0.2000000000 -3.4000000000) 
+    (layer F.Fab) 
+    (effects 
+        (font 
+            (size 1.0000000000 1.0000000000) 
+            (thickness 0.1500000000)))) 
+(fp_line 
+    (start -2.5000000000 -2.5000000000) 
+    (end 2.5000000000 -2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start 2.5000000000 -2.5000000000) 
+    (end 2.5000000000 2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start 2.5000000000 2.5000000000) 
+    (end -2.5000000000 2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000)) 
+(fp_line 
+    (start -2.5000000000 2.5000000000) 
+    (end -2.5000000000 -2.5000000000) 
+    (layer F.SilkS) 
+    (width 0.1500000000))))
