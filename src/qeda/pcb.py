@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import configparser
+import importlib
 from numpy import array
 from math import ceil as CEIL
 
@@ -7,11 +8,16 @@ from pykicad.pcb import Net, Via, Segment, Setup, Layer, NetClass, Pcb
 from pykicad.module import *
 
 config = configparser.ConfigParser()
-config.read('configs/pcb.conf')
+config.read('conf/pcb.conf')
 
-class PCB():
-    def __init__(self, title='Quantum PCB Output', comment1='', s='DEFAULT'):
+class PCB:
+    def __init__(self, verbose=False, title='Quantum PCB Output', comment1='', s='DEFAULT'):
+        # Setup verbosity
+        self.verbose = str(verbose).lower()
+        self.setup_verbosity()
         # Get configurations
+        V("Getting configurations")
+        V(config[s])
         # Define nets
         vi_net, vo_net, gnd_net = Net('VI'), Net('VO'), Net('GND')
         # Init variables
@@ -25,15 +31,24 @@ class PCB():
         self.via_size = float(config[s]['via_size'])
         self.drill_size = float(config[s]['drill_size'])
         self.clearance = float(config[s]['clearance'])
-        self.layers = [] #int(config[s]['layers'])
+        self.num_layers = int(config[s]['layers'])
+        self.layers=[]
         self.page_type = [int(x) for x in config[s]['page_type'].split(',')]
         self.trace_width = config[s]['trace_width']
         self.coords = [(0, 0), (10, 0), (10, 10), (0, 10)]
         # PCB Info
+        V("PCB INFO:")
         self.title = title
         self.comment1 = comment1
         grid_orig = [int(x/2) for x in self.page_type]
+        V("Title: {}\nComment1: {}\nGrid Origin: {}".format(self.title, self.comment1, grid_orig))
         self.setup = Setup(grid_origin=grid_orig)
+
+    def setup_verbosity(self):
+        global V
+        V = getattr(importlib.import_module("qeda.verbose", self.verbose),
+self.verbose)
+        V("Verbosity setup on PCB prototype complete")
 
     def _connect_pad(self, comp, pad, net):
         """Connects components pads electrically
@@ -41,21 +56,24 @@ class PCB():
             pad - integer, pad number
             net - Net, which net to connect to
         """
+        V("Connecting pad {} on component {} to net {}".format(pad, comp, net))
         # r1.pads[0].net = vi
         comp.pads[pad].net = self.nets[net]
 
     def _place_component(self, comp, x_pos, y_pos):
         """Places component comp at position x,y and adds it to PCB list"""
+        V("Placing component at cooridinate ({},{})".format( x_pos, y_pos))
         comp.at = [x_pos, y_pos]
         self.modules.append(comp)
 
     def _final_compute(self, comp):
         """Computes the positions of vias for quantum optical components"""
+        V("Computing final positions of vias for optical components")
         start = array(comp.pads[1].at) + array(comp.at)
         end = array(comp.pads[0].at) + array(comp.at)
         pos = start + (end - start) / 2
+        V("Start: {}\nEnd: {}\nPosition: {}".format(start, end, pos))
         self._create_via(pos, self.nets[1].code)
-
         return start, end, pos
 
     def _compute_positions(self, comp1, comp2, pads=[1, 0], create_vias=True):
@@ -67,9 +85,11 @@ class PCB():
         Notes:
             comp1 and comp2 can be the same.
         """
+        V("Computing positions of vias for components.")
         start = array(comp1.pads[pads[0]].at) + array(comp1.at)
         end = array(comp2.pads[pads[1]].at) + array(comp2.at)
         pos = start + (end-start)/2
+        V("Start: {}\nEnd: {}\nPosition: {}".format(start, end, pos))
 
         if create_vias:
             self._create_via(pos, self.nets[1].code)
@@ -82,10 +102,12 @@ class PCB():
         via_size = Size of via (default 0.8)
         drill_size = Size of drill (default 0.6)
         """
+        V("Creating Via")
         if via_size is None:
             via_size = self.via_size
         if drill_size is None:
             drill_size = self.drill_size
+        V("Position: {}\nNet: {}\nVia Size: {}\nDrill Size: {}".format(pos, net, via_size, drill_size))
         self.vias.append(Via(at=pos.tolist(), size=via_size, drill=drill_size, net=net))
 
     def _create_segment(self, start, end, net):
@@ -96,6 +118,7 @@ class PCB():
         start
         end
         """
+        V("Creating Segment.\nStart: {}\nEnd: {}\nNet: {}".format(start, end, net))
         self.segments.append(Segment(
             start=start.tolist(),
             end=end.tolist(),
@@ -107,56 +130,71 @@ class PCB():
         # Unneeded?
         #gndplane_top = Zone(net_name='GND', layer='F.Cu',
         #                    polygon=coords, clearance=self.clearance)
-
-        layers = [
+        V("Creating Zones.")
+        self.layers = [
             Layer('F.Cu'),
             Layer('Inner1.Cu'),
             Layer('Inner2.Cu'),
             Layer('B.Cu'),
             Layer('Edge.Cuts', type='user')
             ]
+        V(self.layers)
         for layer in ['Mask', 'Paste', 'SilkS', 'CrtYd', 'Fab']:
             for side in ['B', 'F']:
-                layers.append(Layer('%s.%s' % (side, layer), type='user'))
+                V("Adding layer {} to side {}".format(layer, side))
+                self.layers.append(Layer('%s.%s' % (side, layer), type='user'))
         self.net_classes = NetClass('default',
                                     trace_width=self.trace_width,
                                     nets=['VI', 'VO', 'GND'])
 
     def _create_pcb(self):
-        print('Making PCB')
+        V('Making PCB')
         pcb = Pcb()
         pcb.title = self.title
+        V("Title set to {}".format(pcb.title))
         pcb.comment1 = self.comment1
         pcb.page_type = self.page_type
         pcb.num_nets = self.num_nets
+        V('setup', self.setup)
         pcb.setup = self.setup
+        V('layers', self.layers)
         pcb.layers = self.layers
         pcb.modules = self.modules
-        print([x.at for x in self.modules])
-        print([x.at for x in pcb.modules])
+        V(pcb.modules)
+        V("Setting net classes")
         pcb.net_classes = self.net_classes
+        V("Setting nets")
         pcb.nets = self.nets
+        V("Setting vias")
         pcb.vias = self.vias
+        V("Setting zones")
         pcb.zones = self.zones
+        V("Writing to file")
         pcb.to_file('project')
         
         
 class PCBBuilder:
-    def __init__(self,qcode={}):
-        self.pcb=PCB()
+    def __init__(self, qcode={}, verbose=False):
+        self.verbose = str(verbose).lower()
+        self.setup_verbosity()
+        self.pcb=PCB(self.verbose)
         self.qcode={}
+        self.oldq=qcode
         for i in range(1,len(qcode)+1):
+            self.qcode[i]=[]
+            self.qcode[i].append(Module.from_file(qcode[i][0][0] + 'Photon-Source.kicad_mod'))
             for each in qcode[i]:
-                print(each[0],each[1])
-                if i not in self.qcode.keys():
-                    self.qcode[i] = [Module.from_library(each[0],each[1])]
-                else:
-                    self.qcode[i].append(Module.from_library(each[0],each[1]))
-        print("PCB BUILDER QCODE")
-        print(qcode)
+                self.qcode[i].append(Module.from_file(each[0] + each[1] + '.kicad_mod'))
+        V("PCB BUILDER QCODE")
         self._autoplace_()
         self.pcb._create_zones()
         self.pcb._create_pcb()
+
+    def setup_verbosity(self):
+        global V
+        V = getattr(importlib.import_module("qeda.verbose", self.verbose), self.verbose)
+        V("Verbosity setup on PCBBuilder complete")
+
     def _find_max_x(self, comp):
         """Return the maximal X size of a component as an interger"""
         max_x = 0
@@ -201,24 +239,29 @@ class PCBBuilder:
         
     def _place_component(self, comp, x, y):
         """Places the component at x,y"""
-        print("Placing component {} at ({}, {})".format(comp.name, x,y))
+        V("Placing component {} at ({}, {})".format(comp.name, x,y))
         self.pcb._place_component(comp, x, y)
-        print("Component {} is at {}".format(comp.name, comp.at))
+        V("Component {} is at {}".format(comp.name, comp.at))
         
     def _autoplace_(self):
+        V("Running auto-placer")
         pos = {
             'X': 0,
             'Y': 0}
         cur_x = 0
         cur_y = 0
+        V("Mapping Qubits")
         for qubit, gates in self.qcode.items():
-            print("Creating qubit {}".format(qubit))
+            V("Creating qubit {}".format(qubit))
             # Iterate over qubits
             for i in range(len(gates)):
                 # Iterate over gates
+                V("Processing component {} of qubit {}".format(i, qubit))
                 # Find maxes
+                V("Finding maximum geometry of component.")
                 x, y = self._find_maxes(gates[i])
                 # Place component
+                V("Placing component.")
                 cur_x += x
                 pos['X'] = cur_x
                 if y > cur_y:            

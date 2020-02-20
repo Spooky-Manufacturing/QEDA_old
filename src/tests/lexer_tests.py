@@ -1,5 +1,5 @@
 import unittest
-from context import Lexer
+from tests.context import Lexer
 
 class LexerTests(unittest.TestCase):
 

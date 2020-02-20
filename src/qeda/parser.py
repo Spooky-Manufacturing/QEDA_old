@@ -1,11 +1,13 @@
+import importlib
 from rply import ParserGenerator
 from qeda.qast import *
-from qeda.schema import SchemaBuilder
-from qeda.pcb import PCBBuilder
+
 
 class Parser():
 
-    def __init__(self):
+    def __init__(self, verbose=False):
+        self.verbose = str(verbose).lower()
+        self.setup_verbosity()
         self.parser_generator = ParserGenerator(
             ['$end', 'OPENQASM', 'INCLUDE', 'OPAQUE', 'BARRIER', 'IF', 'MEASURE',
              'RESET', 'QREG', 'CREG', 'GATE', 'PAREN_OPEN', 'PAREN_CLOSE', 'STRING',
@@ -15,27 +17,29 @@ class Parser():
               'COS', 'TAN', 'EXP', 'LN', 'SQRT', 'ASSIGN_TO', 'EQU', 'ID', 'INT', 'REAL']
 
         )
-
+    def setup_verbosity(self):
+        global V
+        V = getattr(importlib.import_module("qeda.verbose", self.verbose), self.verbose)
+        V("Verbosity setup complete")
+    
     def parse(self):
 
         @self.parser_generator.production('main : OPENQASM real SEMI_COLON program')
         @self.parser_generator.production('main : OPENQASM real SEMI_COLON include program')
         def main(p):
-            print("Creating main")
-            print("QCODE: {}".format(qcode))
-            SchemaBuilder(qcode)
-            PCBBuilder(qcode)
-            return OpenQASM(real)
+            V("Creating Main")
+            V("QCODE: {}".format(QCODE))
+            return QCODE
 
         @self.parser_generator.production('include : INCLUDE STRING SEMI_COLON')
         def include(p):
-            print("Including file")
+            V("Including file {}".format(p[1]))
             return p[0]
 
         @self.parser_generator.production('program : statement')
         @self.parser_generator.production('program : program statement')
         def program(p):
-            print("Creating program!")
+            V("Creating program!")
             pass
 
         @self.parser_generator.production('statement : decl')
@@ -48,31 +52,31 @@ class Parser():
         @self.parser_generator.production('statement : IF PAREN_OPEN id EQU EQU int PAREN_CLOSE qop')
         @self.parser_generator.production('statement : BARRIER anylist SEMI_COLON')
         def statement(p):
-            print("Creating statement!")
+            V("Creating statement!")
             pass
 
         @self.parser_generator.production('decl : QREG id OPEN_BRACKET int CLOSE_BRACKET SEMI_COLON')
         @self.parser_generator.production('decl : CREG id OPEN_BRACKET int CLOSE_BRACKET SEMI_COLON')
         def decl(p):
-            print("Declaring register {} id {}".format(p[0].name, p[1].value))
+            V("Declaring register {} id {}".format(p[0].name, p[1].value))
             if p[0].name == 'QREG':
-                print("Creating quantum register")
+                V("Creating quantum register")
             elif p[0].name == 'CREG':
-                print("Creating classical register")
+                V("Creating classical register")
             pass
 
         @self.parser_generator.production('gatedecl : GATE id idlist OPEN_BRACE')
         @self.parser_generator.production('gatedecl : GATE id PAREN_OPEN PAREN_CLOSE idlist OPEN_BRACE')
         @self.parser_generator.production('gatedecl : GATE id PAREN_OPEN idlist PAREN_CLOSE idlist OPEN_BRACE')
         def gatedecl(p):
-            if p[2].value == 'PAREN_OPEN':
+            V([x for x in p])
+            V('Declaring GATE: {}'.format(p[1].value))
+            if 'list' in str(type(p[2])):
+                return GateDecl(p[1].value, args=p[2])
+            elif p[2].value == 'PAREN_OPEN':
                 if len(p) == 7:
-                    GateDecl(p[1].value, args=p[3])
-                GateDecl(p[1].value, control=p[3])
-            elif list in str(type(p[2])):
-                GateDecl(p[1].value, args=p[2])
-            print('Declaring GATE: {}'.format(p[1].value))
-            pass
+                    return GateDecl(p[1].value, args=p[3])
+                return GateDecl(p[1].value, control=p[3])
 
         @self.parser_generator.production('goplist : uop')
         @self.parser_generator.production('goplist : BARRIER idlist SEMI_COLON')
@@ -85,14 +89,16 @@ class Parser():
         @self.parser_generator.production('qop : MEASURE argument ASSIGN_TO argument SEMI_COLON')
         @self.parser_generator.production('qop : RESET argument SEMI_COLON')
         def qop(p):
-            if 'token' in str(type(p[0])):
+           if "Token" in str(type(p[0])):
+                V("Token")
                 if p[0].name == 'MEASURE':
-                    print("MEASURE")
+                    V("MEASURE: {}, {}".format(p[1],p[3]))
+                    Measure(p[1])
+                    V("Measure complete")
                 elif p[0].name == 'RESET':
-                    print("RESET")
-            else:
+                    V("RESET")
+           else:
                 return p[0]
-            pass
 
         @self.parser_generator.production('uop : U PAREN_OPEN explist PAREN_CLOSE argument SEMI_COLON')
         @self.parser_generator.production('uop : CX argument COMMA argument SEMI_COLON')
@@ -105,52 +111,56 @@ class Parser():
         @self.parser_generator.production('uop : id id OPEN_BRACKET int CLOSE_BRACKET SEMI_COLON') # supports X a[1];
         @self.parser_generator.production('uop : id PAREN_OPEN int PAREN_CLOSE SEMI_COLON') # Supports X(0);
         def uop(p):
-            print('uop', p[1])
+            V('uop', p)
             if p[0].name in ('U', 'u'):
-                print('U gate!')
+                V('U gate!')
                 return p
+            elif p[0].name in ('cx', 'CX'):
+                V("CX Gate")
+                if len(p) == 5:
+                    return CX(p[1],p[3])
+                else:
+                    return CX(p[0][0],p[0][1])
             elif p[0].name == 'ID':
-                print('a',p)
-                if p[0].value in ('CCX', 'ccx'):
-                    print('Controlled Controlled Gate!')
-                elif p[0].value.lower() == 'h':
-                    print("Hadamard!")
+                V('a',p)
+                if p[0].value.lower() == 'h':
+                    V("Hadamard!")
                     return H(p[2])
                 elif p[0].value.lower() == 'i':
-                    print("Identity!")
+                    V("Identity!")
                     return I(p[2])
                 elif p[0].value.lower() == 's':
-                    print("S Gate")
+                    V("S Gate")
                     return S(p[2])
                 elif p[0].value.lower() == 'sdg':
-                    print("SDG Gate")
+                    V("SDG Gate")
                     return SDG(p[2])
                 elif p[0].value.lower() == 't':
-                    print("T Gate")
+                    V("T Gate")
                     return T(p[2])
                 elif p[0].value.lower() == 'tdg':
-                    print("TDG Gate")
+                    V("TDG Gate")
                     return TDG(p[2])
                 elif p[0].value.lower() == 'x':
-                    print("X Gate")
+                    V("X Gate")
                     return X(p[2])
                 elif p[0].value.lower() == 'y':
-                    print("Y Gate")
+                    V("Y Gate")
                     return Y(p[2])
                 elif p[0].value.lower() == 'z':
-                    print("Z Gate")
+                    V("Z Gate")
                     return Z(p[2])
                 elif p[0].value.lower() == 'rx':
-                    print("RX Gate")
+                    V("RX Gate")
                     return RX(p[2])
                 elif p[0].value.lower() == 'ry':
-                    print("RY Gate")
+                    V("RY Gate")
                     return RY(p[2])
                 elif p[0].value.lower() == 'rz':
-                    print("RZ Gate")
+                    V("RZ Gate")
                     return RZ(p[2])
                 else:
-                    print(p[0])
+                    V(p[0])
                 return p
             pass
 
@@ -159,11 +169,11 @@ class Parser():
         def anylist(p):
             x = []
             if type(p[0]) == list:
-                print("anylist list", p[0])
+                V("anylist list", p[0])
                 x = [x for x in p[0]]
-                print("anylist list res", x)
+                V("anylist list res", x)
             elif 'token' in str(type(p[0])):
-                print('anylist token', p[0])
+                V('anylist token', p[0])
                 x = [x for x in p]
             return x
 
@@ -172,14 +182,14 @@ class Parser():
         def idlist(p):
             x = []
             if type(p[0]) == list:
-                print("idlist list", p[0])
+                V("idlist list", p[0])
                 x = [x for x in p[0]]
                 x.append(p[2])
-                print('idlist list res', x)
+                V('idlist list res', x)
             elif 'token' in str(type(p[0])):
-                print('idlist token', p[0])
+                V('idlist token', p[0])
                 x = [p[0], p[2]]
-                print('idlist token res', x)
+                V('idlist token res', x)
             return x
         
         @self.parser_generator.production('mixedlist : id OPEN_BRACKET int CLOSE_BRACKET')
@@ -198,15 +208,15 @@ class Parser():
                     x.append({
                         'name': [2],
                         'val': [4]})
-            print('mixedlist', x)
+            V('mixedlist', x)
             return x
 
         @self.parser_generator.production('argument : id')
         @self.parser_generator.production('argument : real')
-        @self.parser_generator.production('argument : INT')
+        @self.parser_generator.production('argument : int')
         @self.parser_generator.production('argument : anylist')
         def argument(p):
-            print('arg', p)
+            V('arg', p)
             return p[0]
 
         @self.parser_generator.production('explist : expression')
@@ -231,7 +241,7 @@ class Parser():
         @self.parser_generator.production('expression : PAREN_OPEN expression PAREN_CLOSE')
         @self.parser_generator.production('expression : unaryop PAREN_OPEN expression PAREN_CLOSE')
         def expression(p):
-            print('expression', p)
+            V('expression', p)
             return p
             pass
 
@@ -242,32 +252,29 @@ class Parser():
         @self.parser_generator.production('unaryop : EXP ')
         @self.parser_generator.production('unaryop : LN ')
         def unaryop(p):
-            print('unaryop', p)
+            V('unaryop', p)
             return p[0]
 
         @self.parser_generator.production('id : ID ')
         def id(p):
-            print([p[x].value for x in range(len(p))])
-            print('setting id', p[0].value)
+            V([p[x].value for x in range(len(p))])
+            V('setting id', p[0].value)
             return p[0]
 
         @self.parser_generator.production('int : INT')
         def nnint(p):
-            print('setting int', p[0].value)
+            V('setting int', p[0].value)
             return Int(p[0].value)
+
         @self.parser_generator.production('real : REAL')
         def real(p):
-            print('setting float', p[0].value)
-            return p[0]
-
-        @self.parser_generator.production('main : $end')
-        def end(p):
+            V('setting float', p[0].value)
             return p[0]
 
         @self.parser_generator.error
         def error_handle(token):
             '''"Dirty" error handling'''
-            print(token)
+            V(token)
             raise ValueError(token)
 
     def get_parser(self):

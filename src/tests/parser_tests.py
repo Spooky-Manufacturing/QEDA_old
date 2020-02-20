@@ -1,6 +1,6 @@
 import unittest
 
-from context import Lexer, Parser
+from tests.context import Lexer, Parser
 
 class ParserTest(unittest.TestCase):
     def setUp(self):
