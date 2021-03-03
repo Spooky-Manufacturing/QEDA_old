@@ -5,4 +5,4 @@
     The threader.py script enables multithreading with the QEDA software.
 """
 
-# Lines are chunked by the main script and then passed into 
+# Lines are chunked by the main script and then passed into
