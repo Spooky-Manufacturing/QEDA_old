@@ -202,11 +202,11 @@ class PCBBuilder:
         geo = comp.geometry()
         x = [each for each in geo]
         for each in x:
-            if each.start == None and each.end != None:
+            if each.start is None and each.end is not None:
                 y = abs(0 - each.end[0])
-            elif each.end == None and each.start != None:
+            elif each.end is None and each.start is not None:
                 y = abs(each.start)
-            elif each.start == each.end == None:
+            elif each.start == each.end is None:
                 pass
             else:
                 y = abs(each.start[0] - each.end[0])
@@ -220,11 +220,11 @@ class PCBBuilder:
         geo = comp.geometry()
         x = [each for each in geo]
         for each in x:
-            if each.start == None and each.end != None:
+            if each.start is None and each.end is not None:
                 y = abs(0 - each.end)
-            if each.end == None and each.start != None:
+            if each.end is None and each.start is not None:
                 y = abs(each.start)
-            elif each.start == each.end == None:
+            elif each.start == each.end is None:
                 pass
             else:
                 y = abs(each.start[1] - each.end[1])
