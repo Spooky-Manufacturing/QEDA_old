@@ -1,6 +1,7 @@
 import unittest
 from tests.context import qast
 
+
 class QAST_Tests(unittest.TestCase):
     def setUp(self):
         self.end = qast.End
@@ -57,7 +58,7 @@ class QAST_Tests(unittest.TestCase):
 
     def test_cq_gate(self):
         control = 1
-        targets = [2,3,4,5]
+        targets = [2, 3, 4, 5]
         self.assertEqual(self.cq_gate(control=control, targets=targets).eval(),
                          (control, targets, None))
 
@@ -65,7 +66,7 @@ class QAST_Tests(unittest.TestCase):
         self.assertEqual(self.custom_q_gate('test').eval(),
                          (None, None, None))
         control = 1
-        targets = [2,3,4]
+        targets = [2, 3, 4]
         self.assertEqual(self.custom_q_gate('test', control, targets).eval(),
                          (control, targets, None))
 
@@ -105,11 +106,9 @@ class QAST_Tests(unittest.TestCase):
         self.assertEqual(self.z(0).eval(),
                          (qast.LIB, 'ZGate'))
 
-
     def test_rx_gate(self):
         self.assertEqual(self.rx(0).eval(),
                          (qast.LIB, 'RXGate'))
-
 
     def test_rz_gate(self):
         self.assertEqual(self.rz(0).eval(),
@@ -145,7 +144,7 @@ class QAST_Tests(unittest.TestCase):
 
     def test_ccx_gate(self):
         control = 1
-        targets = [2,3]
+        targets = [2, 3]
         self.assertEqual(self.ccx(control, targets).eval(),
                          (control, targets,
                           (qast.LIB, 'CCXGate')))
@@ -174,5 +173,7 @@ class QAST_Tests(unittest.TestCase):
     def test_measurement(self):
         self.assertEqual(self.measure(0).eval(),
                          (qast.LIB, 'MEASURE'))
+
+
 if __name__ == '__main__':
     unittest.main()
