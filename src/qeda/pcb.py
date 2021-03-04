@@ -1,11 +1,12 @@
 #!/usr/bin/python3
 import configparser
 import importlib
+from math import ceil
 from numpy import array
-from math import ceil as CEIL
+
 
 from pykicad.pcb import Net, Via, Segment, Setup, Layer, NetClass, Pcb
-from pykicad.module import *
+from pykicad.module import Module
 
 config = configparser.ConfigParser()
 config.read('conf/pcb.conf')
@@ -127,9 +128,9 @@ class PCB:
 
     def _create_zones(self):
         """Creates the zones (layers) of the PCB"""
-        #coords = self.coords
+        # coords = self.coords
         # Unneeded?
-        #gndplane_top = Zone(net_name='GND', layer='F.Cu',
+        # gndplane_top = Zone(net_name='GND', layer='F.Cu',
         #                    polygon=coords, clearance=self.clearance)
         V("Creating Zones.")
         self.layers = [
@@ -212,7 +213,7 @@ class PCBBuilder:
                 y = abs(each.start[0] - each.end[0])
                 if y > max_x:
                     max_x = y
-        return CEIL(max_x)
+        return ceil(max_x)
 
     def _find_max_y(self, comp):
         """Return the maximal X size of a component as an interger"""
@@ -230,7 +231,7 @@ class PCBBuilder:
                 y = abs(each.start[1] - each.end[1])
                 if y > max_y:
                     max_y = y
-        return CEIL(max_y)
+        return ceil(max_y)
 
     def _find_maxes(self, comp):
         """Returns the maximal x and y value of a component (starting at 0,0)"""
