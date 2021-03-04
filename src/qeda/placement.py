@@ -1,5 +1,7 @@
 # The placement algorithm
 import configparser
+
+
 class Placement:
     def __init__(self, specs, qcode):
         self.spec_conf = specs
@@ -28,7 +30,7 @@ class Placement:
 
     def placement_algorithm(self):
         """Runs the placement algorithm"""
-        pos = { 'X':0, 'Y':0 } # First component is placed at (0,0)
+        pos = {'X': 0, 'Y': 0}  # First component is placed at (0,0)
         cur_x = 0
         cur_y = 0
         # cur_x = Current X, init at 0 or x origin
@@ -43,8 +45,8 @@ class Placement:
         # Verify within circuit specs - throw an error if component height is
         # greater than comp_max_y.
         # Calculate V and H points for the first component
-        V_Points = {'X':0, 'Y':0}
-        H_Points = {'X':0, 'Y':0}
+        V_Points = {'X': 0, 'Y': 0}
+        H_Points = {'X': 0, 'Y': 0}
         # To calculate the X, use the Min(X) and Max(X) of the component found
         # earlier.
         # To calculate the V(Y), take the Max(y) and subtract comp_mode_V_top_margin
