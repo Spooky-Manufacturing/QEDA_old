@@ -3,10 +3,12 @@ import getopt
 import sys
 from qeda.qeda import QEDAManager
 
+
 def test():
     """Runs the test suite"""
     print(test)
     sys.exit(0)
+
 
 def help():
     """Prints the help information to terminal"""
@@ -21,11 +23,13 @@ def help():
     print("\n\nCopyright 2020 Spooky Manufacturing, LLC")
     sys.exit(0)
 
+
 def run(inf, outf, proc, verbose, pcb, schema):
     """Runs QEDA"""
     print("Starting QEDA Manager")
     x = QEDAManager(inf, outf, proc, verbose, pcb, schema)
     sys.exit(0)
+
 
 def main(args=None):
     """The main routine"""
@@ -81,6 +85,7 @@ def main(args=None):
     except getopt.error as err:
         print(str(err))
         sys.exit(2)
+
 
 if __name__ == '__main__':
     main()
