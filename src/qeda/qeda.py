@@ -1,9 +1,11 @@
 import importlib
+import sys
 
 from qeda.lexer import Lexer
 from qeda.parser import Parser
 from qeda.schema import SchemaBuilder
 from qeda.pcb import PCBBuilder
+
 
 class QEDAManager:
     """QEDA Manager Class
@@ -36,7 +38,7 @@ class QEDAManager:
         self.make_schema = make_schema
         # Setup up verbosity
         self.verbose_setup()
-        
+
         # Initialization verification
         self.init_checks()
 
@@ -53,18 +55,17 @@ class QEDAManager:
         V("Verbosity setup complete")
 
     def init_checks(self):
-        if self.infile == None:
+        if not self.infile:
             raise Exception('Error: No input file specified')
-        if self.outfile == None:
+        if not self.outfile:
             self.outfile = self.infile + '.out'
             V("Outfile: {}".format(self.outfile))
-        if self.make_pcb == self.make_schema == False:
+        if not (self.make_pcb or self.make_schema):
             V("No work to be done.")
             sys.exit(0)
 
     def mp_manager(self):
         """The multiprocessor manager, spawns and delegates tasks if possible"""
-        
         pass
 
     def main_block(self):
@@ -76,11 +77,11 @@ class QEDAManager:
             V("Tokens", tokens)
             qcode = self.call_parser(tokens)
             V("QCode", qcode)
-            if self.make_pcb == True:
+            if self.make_pcb:
                 self.call_pcb_maker(qcode)
-            if self.make_schema == True:
+            if self.make_schema:
                 self.call_schema_maker(qcode)
-            
+
         except Exception as e:
             V("An error occurred.")
             V(e)
