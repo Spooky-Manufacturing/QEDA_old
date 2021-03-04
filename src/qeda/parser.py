@@ -13,15 +13,16 @@ class Parser():
              'RESET', 'QREG', 'CREG', 'GATE', 'PAREN_OPEN', 'PAREN_CLOSE', 'STRING',
              'OPEN_BRACKET', 'CLOSE_BRACKET', 'OPEN_BRACE', 'CLOSE_BRACE',
               'SEMI_COLON', 'COLON', 'DASH', 'UNDER_SCORE', 'COMMA', 'QUOTE',
-              'U', 'CX', 'PLUS', 'MINUS', 'MUL', 'DIV', 'POW', 'PI', 'SIN', 
+              'U', 'CX', 'PLUS', 'MINUS', 'MUL', 'DIV', 'POW', 'PI', 'SIN',
               'COS', 'TAN', 'EXP', 'LN', 'SQRT', 'ASSIGN_TO', 'EQU', 'ID', 'INT', 'REAL']
 
         )
+
     def setup_verbosity(self):
         global V
         V = getattr(importlib.import_module("qeda.verbose", self.verbose), self.verbose)
         V("Verbosity setup complete")
-    
+
     def parse(self):
 
         @self.parser_generator.production('main : OPENQASM real SEMI_COLON program')
@@ -89,15 +90,15 @@ class Parser():
         @self.parser_generator.production('qop : MEASURE argument ASSIGN_TO argument SEMI_COLON')
         @self.parser_generator.production('qop : RESET argument SEMI_COLON')
         def qop(p):
-           if "Token" in str(type(p[0])):
+            if "Token" in str(type(p[0])):
                 V("Token")
                 if p[0].name == 'MEASURE':
-                    V("MEASURE: {}, {}".format(p[1],p[3]))
+                    V("MEASURE: {}, {}".format(p[1], p[3]))
                     Measure(p[1])
                     V("Measure complete")
                 elif p[0].name == 'RESET':
                     V("RESET")
-           else:
+            else:
                 return p[0]
 
         @self.parser_generator.production('uop : U PAREN_OPEN explist PAREN_CLOSE argument SEMI_COLON')
@@ -106,10 +107,10 @@ class Parser():
         @self.parser_generator.production('uop : int anylist SEMI_COLON')
         @self.parser_generator.production('uop : int PAREN_OPEN PAREN_CLOSE anylist SEMI_COLON')
         @self.parser_generator.production('uop : int PAREN_OPEN explist PAREN_CLOSE anylist SEMI_COLON')
-        @self.parser_generator.production('uop : id anylist SEMI_COLON') # Adds support for custom gates: ccx a,b,c;
-        @self.parser_generator.production('uop : id id SEMI_COLON') # supports: y b;
-        @self.parser_generator.production('uop : id id OPEN_BRACKET int CLOSE_BRACKET SEMI_COLON') # supports X a[1];
-        @self.parser_generator.production('uop : id PAREN_OPEN int PAREN_CLOSE SEMI_COLON') # Supports X(0);
+        @self.parser_generator.production('uop : id anylist SEMI_COLON')  # Adds support for custom gates: ccx a,b,c;
+        @self.parser_generator.production('uop : id id SEMI_COLON')  # Supports: y b;
+        @self.parser_generator.production('uop : id id OPEN_BRACKET int CLOSE_BRACKET SEMI_COLON')  # Supports X a[1];
+        @self.parser_generator.production('uop : id PAREN_OPEN int PAREN_CLOSE SEMI_COLON')  # Supports X(0);
         def uop(p):
             V('uop', p)
             if p[0].name in ('U', 'u'):
@@ -118,11 +119,11 @@ class Parser():
             elif p[0].name in ('cx', 'CX'):
                 V("CX Gate")
                 if len(p) == 5:
-                    return CX(p[1],p[3])
+                    return CX(p[1], p[3])
                 else:
-                    return CX(p[0][0],p[0][1])
+                    return CX(p[0][0], p[0][1])
             elif p[0].name == 'ID':
-                V('a',p)
+                V('a', p)
                 if p[0].value.lower() == 'h':
                     V("Hadamard!")
                     return H(p[2])
@@ -191,14 +192,14 @@ class Parser():
                 x = [p[0], p[2]]
                 V('idlist token res', x)
             return x
-        
+
         @self.parser_generator.production('mixedlist : id OPEN_BRACKET int CLOSE_BRACKET')
         @self.parser_generator.production('mixedlist : mixedlist COMMA id')
         @self.parser_generator.production('mixedlist : mixedlist COMMA id OPEN_BRACKET int CLOSE_BRACKET')
         @self.parser_generator.production('mixedlist : idlist COMMA id OPEN_BRACKET int CLOSE_BRACKET')
         def mixedlist(p):
             if 'token' in str(type(p[0])):
-                x = [{ 'name': p[0], 'val': p[2]}]
+                x = [{'name': p[0], 'val': p[2]}]
             elif type(p[0]) == list:
                 if len(p) == 3:
                     x = [x for x in p[0]]
@@ -280,4 +281,3 @@ class Parser():
     def get_parser(self):
         '''Returns a parser generator object'''
         return self.parser_generator.build()
-
