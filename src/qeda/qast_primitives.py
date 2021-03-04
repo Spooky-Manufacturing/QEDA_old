@@ -1,31 +1,37 @@
 import configparser
+
+
 CONFIG = configparser.ConfigParser()
 CONFIG.read('conf/components.conf')
-SEL = CONFIG['PROJECT']['SELECTION'] # Current Configs
-LIB = CONFIG[SEL]['QLib'] # Component Library
+SEL = CONFIG['PROJECT']['SELECTION']  # Current Configs
+LIB = CONFIG[SEL]['QLib']  # Component Library
 
 QCODE = {}
+
 
 class End():
     def __init__(self):
         global QCODE
 
     def eval(self):
-       return QCODE, 0
+        return QCODE, 0
+
 
 class Int():
     def __init__(self, value):
-        self.value=value
+        self.value = value
 
     def eval(self):
         return int(self.value)
 
+
 class Real():
-    def __init__(self, vaue):
+    def __init__(self, value):
         self.value = value
 
     def eval(self):
         return float(self.value)
+
 
 class Char():
     def __init__(self, value):
@@ -34,6 +40,7 @@ class Char():
     def eval(self):
         return self.value
 
+
 class String():
     def __init__(self, string):
         self.string = string
@@ -41,10 +48,12 @@ class String():
     def eval(self):
         return self.string
 
+
 class BinaryOp():
     def __init__(self, left, right):
         self.left = left
         self.right = right
+
 
 class Component:
     """The Component Primitive
@@ -60,9 +69,10 @@ class Component:
         self.qid = None
 
     def _set_footprint(self, fp):
-        #self.footprint = Module.from_library(LIB, fp) # Final code
-        self.footprint = (LIB, fp) # Testing code
+        #self.footprint = Module.from_library(LIB, fp)  # Final code
+        self.footprint = (LIB, fp)  # Testing code
         self._add_qcomponent(self.qid)
+
     def _add_qcomponent(self, qid):
         """Adds the components to master dictionary"""
         try:
@@ -89,9 +99,11 @@ class Component:
         except Exception as e:
             print("exception", e)
             pass
+
     def eval(self):
         return self.footprint, QCODE
-        
+
+
 class UQGate(Component):
     """The Unitary Quantum Gates.
     qid: Integer representing the qubit (starting from 0 to +N)
@@ -103,6 +115,7 @@ class UQGate(Component):
 
     def eval(self):
         return self.footprint
+
 
 class CQGate(Component):
     """The Controlled Quantum Gates.
@@ -133,6 +146,7 @@ class CQGate(Component):
 #    def eval(self):
 #        return self.qid, self.targets, self.footprint
 
+
 class CustomQGate(Component):
     """Class for Custom Quantum Gates."""
     def __init__(self, gate_name, control=None, targets=None):
@@ -144,4 +158,3 @@ class CustomQGate(Component):
     def eval(self):
         print(self.qid)
         return self.qid, self.targets, self.footprint
-
