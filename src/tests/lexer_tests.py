@@ -1,6 +1,7 @@
 import unittest
 from tests.context import Lexer
 
+
 class LexerTests(unittest.TestCase):
 
     def setUp(self):
@@ -18,7 +19,7 @@ class LexerTests(unittest.TestCase):
 
     def test_comments(self):
         # comments should be completely ignored
-        text ='//this is a comment in qasm//h1'
+        text = '//this is a comment in qasm//h1'
         tokens = self._get_tokens(text)
         self._tokens_equ(tokens, ['ID'])
         # Only the H gate should be seen in the above code
@@ -38,7 +39,7 @@ class LexerTests(unittest.TestCase):
     def test_specification(self):
         text = 'OPENQASM: 2.0;'
         tokens = self._get_tokens(text)
-        equals = ['OPENQASM' , 'COLON', 'REAL', 'SEMI_COLON']
+        equals = ['OPENQASM', 'COLON', 'REAL', 'SEMI_COLON']
         self._tokens_equ(tokens, equals)
 
     def test_include(self):
@@ -106,7 +107,7 @@ class LexerTests(unittest.TestCase):
         equals = ['GATE', 'ID', 'PAREN_OPEN',
                   'ID', 'COMMA', 'ID', 'COMMA',
                   'ID', 'PAREN_CLOSE',
-                  'ID', 'OPEN_BRACE', 
+                  'ID', 'OPEN_BRACE',
                   'U', 'PAREN_OPEN', 'ID', 'COMMA',
                   'ID', 'COMMA', 'ID',
                   'PAREN_CLOSE', 'ID', 'SEMI_COLON',
@@ -141,11 +142,9 @@ class LexerTests(unittest.TestCase):
                   'CLOSE_BRACKET', 'COMMA', 'ID', 'OPEN_BRACKET', 'INT',
                   'CLOSE_BRACKET', 'COMMA', 'ID', 'OPEN_BRACKET', 'INT',
                   'CLOSE_BRACKET', 'COMMA', 'ID', 'OPEN_BRACKET', 'INT',
-                  'CLOSE_BRACKET', 'SEMI_COLON', 'ID','ID', 'ASSIGN_TO',
+                  'CLOSE_BRACKET', 'SEMI_COLON', 'ID', 'ID', 'ASSIGN_TO',
                   'ID', 'SEMI_COLON']
 
-        
 
-              
 if __name__ == '__main__':
     unittest.main()

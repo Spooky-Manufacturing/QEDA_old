@@ -94,6 +94,9 @@ venv.bak/
 .spyderproject
 .spyproject
 
+# Swap files
+*.swp
+
 # Rope project settings
 .ropeproject
 

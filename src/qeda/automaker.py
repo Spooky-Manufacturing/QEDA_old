@@ -1,7 +1,8 @@
 #!/usr/bin/python3
-from math import ceil as CEIL
+from math import ceil
 from pcb import PCB, Segment
 from pykicad.module import Module
+
 
 class Automaker():
     def __init__(self):
@@ -18,13 +19,12 @@ class Automaker():
         b.set_reference('b')
         c = Module.from_library('Resistors_SMD', 'R_0805')
         c.set_reference('c')
-        qcode = [[a,b,c], [x,y], [z]]
+        qcode = [[a, b, c], [x, y], [z]]
         self.automake(qcode)
         pass
 
     def _find_max_x(self, comp):
         """Returns the maximal X size as an integer"""
-        global CEIL
         max_x = 0
         geo = comp.geometry()
         x = [each for each in geo]
@@ -39,11 +39,10 @@ class Automaker():
                 y = abs(each.start[0] - each.end[0])
                 if y > max_x:
                     max_x = y
-        return CEIL(max_x)
+        return ceil(max_x)
 
     def _find_max_y(self, comp):
         """Return maximal Y size as an integer"""
-        global CEIL
         max_y = 0
         geo = comp.geometry()
         x = [each for each in geo]
@@ -58,7 +57,7 @@ class Automaker():
                 y = abs(each.start[1] - each.end[1])
                 if y > max_y:
                     max_y = y
-        return CEIL(max_y)
+        return ceil(max_y)
 
     def _find_maxes(self, comp):
         """Returns the maximal x and y value of a component (starting at 0,0)"""
@@ -72,12 +71,12 @@ class Automaker():
 
     def _find_y(sef, pos, maxy):
         return pos[1] + maxy
-        
+
     def _autoplace_unitary_gates(self, qcode):
         pos = {
             'X': 0,
             'Y': 0
-            }
+        }
         max_y = 0
         for qubit in qcode:
             for i in range(len(qubit)):
@@ -85,15 +84,14 @@ class Automaker():
                 self.pcb._place_component(qubit[i], pos['X'], pos['Y'])
                 print('Component is at ', qubit[i].at)
                 x, y = self._find_maxes(qubit[i])
-                #update x, y values
+                # update x, y values
                 pos['X'] = pos['X'] + x
                 if y > max_y:
                     max_y += y
-                #loop
+                # loop
             # Step down y by max_x
             pos['X'] = 0
             pos['Y'] = pos['Y'] + max_y
-
 
 #                if i == len(qubit)-1:
 #                    start, end, np_pos = self.pcb._final_compute(qubit[i])
@@ -107,23 +105,21 @@ class Automaker():
         pos = {
             'X': 0,
             'Y': 0
-            }
+        }
         max_y = 0
-    
-        
-    
+
     def _autoplace3(self, qcode):
         """Automagically places components where they need to be"""
         pos = {
             'X': 0,
             'Y': 0
-            }
+        }
         cur_x = 0
         cur_y = 0
         for qubit in qcode:
             for i in range(len(qubit)):
                 # Connect pads
-#                self.pcb._connect_pad(qubit[i], 1, 1)
+                # self.pcb._connect_pad(qubit[i], 1, 1)
                 # Find maxes
                 x, y = self._find_maxes(qubit[i])
                 print(x)
@@ -135,18 +131,18 @@ class Automaker():
                 self.pcb._place_component(qubit[i], pos['X'], pos['Y'])
                 print('Component is at ', qubit[i].at)
                 # compute and place vias
-                if i == len(qubit)-1:
+                if i == len(qubit) - 1:
                     start, end, pos_np = self.pcb._final_compute(qubit[i])
                 else:
                     start, end, pos_np = self.pcb._compute_positions(
-                        qubit[i], qubit[i+1])
+                        qubit[i], qubit[i + 1])
                 # Create segments
                 self.pcb._create_segment(start, end, self.pcb.nets[1])
                 print('Rechecking, component is at ', qubit[i].at)
             cur_x = 0
             pos['X'] = cur_x
             pos['Y'] = cur_y
-            
+
     def automake(self, qcode):
         """Attempts to automagically make a PCB from modules
 
@@ -160,12 +156,13 @@ class Automaker():
         For quantum gates, we only need to place footprints.
 
         For electrical/analog gates we will need to computer positions, vias, etc"""
-        #Place components
+        # Place components
         self._autoplace(qcode)
         # Create PCB Zones
         self.pcb._create_zones()
         # Make the PCB
         self.pcb._create_pcb()
+
 
 if __name__ == '__main__':
     a = Automaker()

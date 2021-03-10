@@ -1,5 +1,6 @@
 from rply import LexerGenerator
 
+
 class Lexer():
     def __init__(self):
         self.lexer = LexerGenerator()
@@ -7,7 +8,7 @@ class Lexer():
     def _add_tokens(self):
         # Specification
         self.lexer.add('OPENQASM', r'(?i)OPENQASM')
-        #String support
+        # String support
         self.lexer.add('STRING', r'".*"')
         self.lexer.add('STRING', r"'.*'")
         # Includes
@@ -54,7 +55,7 @@ class Lexer():
         self.lexer.add('EXP', r'(?i)exp')
         self.lexer.add('LN', r'(?i)ln')
         self.lexer.add('SQRT', r'(?i)sqrt')
-        #ID support
+        # ID support
         self.lexer.add('ID', r'[a-z][A-Za-z0-9_]*|[A-Z][A-Za-z0-9_]*')
         # Numbers
         self.lexer.add('REAL', r'([0-9]+\.[0-9]*|[0-9]*\.[0-9]+)([eE][-+]?[0-9]+)?')
@@ -63,9 +64,8 @@ class Lexer():
         #self.lexer.add('CHARS', r'[A-Za-z]*')
         self.lexer.add('DOT', r'\.')
 
-
         # Other Chars
-        self.lexer.ignore('\s+')
+        self.lexer.ignore(r'\s+')
         # Ignore Comments
         self.lexer.ignore(r'\//.*//')
         self.lexer.ignore(r'\\\.*\\')

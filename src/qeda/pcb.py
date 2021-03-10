@@ -1,14 +1,16 @@
 #!/usr/bin/python3
 import configparser
 import importlib
+from math import ceil
 from numpy import array
-from math import ceil as CEIL
+
 
 from pykicad.pcb import Net, Via, Segment, Setup, Layer, NetClass, Pcb
-from pykicad.module import *
+from pykicad.module import Module
 
 config = configparser.ConfigParser()
 config.read('conf/pcb.conf')
+
 
 class PCB:
     def __init__(self, verbose=False, title='Quantum PCB Output', comment1='', s='DEFAULT'):
@@ -32,7 +34,7 @@ class PCB:
         self.drill_size = float(config[s]['drill_size'])
         self.clearance = float(config[s]['clearance'])
         self.num_layers = int(config[s]['layers'])
-        self.layers=[]
+        self.layers = []
         self.page_type = [int(x) for x in config[s]['page_type'].split(',')]
         self.trace_width = config[s]['trace_width']
         self.coords = [(0, 0), (10, 0), (10, 10), (0, 10)]
@@ -40,14 +42,14 @@ class PCB:
         V("PCB INFO:")
         self.title = title
         self.comment1 = comment1
-        grid_orig = [int(x/2) for x in self.page_type]
+        grid_orig = [int(x / 2) for x in self.page_type]
         V("Title: {}\nComment1: {}\nGrid Origin: {}".format(self.title, self.comment1, grid_orig))
         self.setup = Setup(grid_origin=grid_orig)
 
     def setup_verbosity(self):
         global V
         V = getattr(importlib.import_module("qeda.verbose", self.verbose),
-self.verbose)
+                    self.verbose)
         V("Verbosity setup on PCB prototype complete")
 
     def _connect_pad(self, comp, pad, net):
@@ -62,7 +64,7 @@ self.verbose)
 
     def _place_component(self, comp, x_pos, y_pos):
         """Places component comp at position x,y and adds it to PCB list"""
-        V("Placing component at cooridinate ({},{})".format( x_pos, y_pos))
+        V("Placing component at cooridinate ({},{})".format(x_pos, y_pos))
         comp.at = [x_pos, y_pos]
         self.modules.append(comp)
 
@@ -88,7 +90,7 @@ self.verbose)
         V("Computing positions of vias for components.")
         start = array(comp1.pads[pads[0]].at) + array(comp1.at)
         end = array(comp2.pads[pads[1]].at) + array(comp2.at)
-        pos = start + (end-start)/2
+        pos = start + (end - start) / 2
         V("Start: {}\nEnd: {}\nPosition: {}".format(start, end, pos))
 
         if create_vias:
@@ -126,9 +128,9 @@ self.verbose)
 
     def _create_zones(self):
         """Creates the zones (layers) of the PCB"""
-        #coords = self.coords
+        # coords = self.coords
         # Unneeded?
-        #gndplane_top = Zone(net_name='GND', layer='F.Cu',
+        # gndplane_top = Zone(net_name='GND', layer='F.Cu',
         #                    polygon=coords, clearance=self.clearance)
         V("Creating Zones.")
         self.layers = [
@@ -137,7 +139,7 @@ self.verbose)
             Layer('Inner2.Cu'),
             Layer('B.Cu'),
             Layer('Edge.Cuts', type='user')
-            ]
+        ]
         V(self.layers)
         for layer in ['Mask', 'Paste', 'SilkS', 'CrtYd', 'Fab']:
             for side in ['B', 'F']:
@@ -171,17 +173,17 @@ self.verbose)
         pcb.zones = self.zones
         V("Writing to file")
         pcb.to_file('project')
-        
-        
+
+
 class PCBBuilder:
     def __init__(self, qcode={}, verbose=False):
         self.verbose = str(verbose).lower()
         self.setup_verbosity()
-        self.pcb=PCB(self.verbose)
-        self.qcode={}
-        self.oldq=qcode
-        for i in range(1,len(qcode)+1):
-            self.qcode[i]=[]
+        self.pcb = PCB(self.verbose)
+        self.qcode = {}
+        self.oldq = qcode
+        for i in range(1, len(qcode) + 1):
+            self.qcode[i] = []
             self.qcode[i].append(Module.from_file(qcode[i][0][0] + 'Photon-Source.kicad_mod'))
             for each in qcode[i]:
                 self.qcode[i].append(Module.from_file(each[0] + each[1] + '.kicad_mod'))
@@ -201,17 +203,17 @@ class PCBBuilder:
         geo = comp.geometry()
         x = [each for each in geo]
         for each in x:
-            if each.start == None and each.end != None:
-                y = abs(0-each.end[0])
-            elif each.end == None and each.start != None:
+            if each.start is None and each.end is not None:
+                y = abs(0 - each.end[0])
+            elif each.end is None and each.start is not None:
                 y = abs(each.start)
-            elif each.start == each.end == None:
+            elif each.start == each.end is None:
                 pass
             else:
                 y = abs(each.start[0] - each.end[0])
                 if y > max_x:
                     max_x = y
-        return CEIL(max_x)
+        return ceil(max_x)
 
     def _find_max_y(self, comp):
         """Return the maximal X size of a component as an interger"""
@@ -219,30 +221,30 @@ class PCBBuilder:
         geo = comp.geometry()
         x = [each for each in geo]
         for each in x:
-            if each.start == None and each.end != None:
+            if each.start is None and each.end is not None:
                 y = abs(0 - each.end)
-            if each.end == None and each.start != None:
+            if each.end is None and each.start is not None:
                 y = abs(each.start)
-            elif each.start == each.end == None:
+            elif each.start == each.end is None:
                 pass
             else:
                 y = abs(each.start[1] - each.end[1])
                 if y > max_y:
                     max_y = y
-        return CEIL(max_y)
+        return ceil(max_y)
 
     def _find_maxes(self, comp):
         """Returns the maximal x and y value of a component (starting at 0,0)"""
         x = self._find_max_x(comp)
         y = self._find_max_y(comp)
         return int(x), int(y)
-        
+
     def _place_component(self, comp, x, y):
         """Places the component at x,y"""
-        V("Placing component {} at ({}, {})".format(comp.name, x,y))
+        V("Placing component {} at ({}, {})".format(comp.name, x, y))
         self.pcb._place_component(comp, x, y)
         V("Component {} is at {}".format(comp.name, comp.at))
-        
+
     def _autoplace_(self):
         V("Running auto-placer")
         pos = {
@@ -264,12 +266,13 @@ class PCBBuilder:
                 V("Placing component.")
                 cur_x += x
                 pos['X'] = cur_x
-                if y > cur_y:            
+                if y > cur_y:
                     cur_y = y
                 self._place_component(gates[i], pos['X'], pos['Y'])
             cur_x = 0
             pos['X'] = cur_x
             pos['Y'] += cur_y
+
 
 if __name__ == '__main__':
     x = PCB()
