@@ -172,7 +172,7 @@ class QAST_Tests(unittest.TestCase):
 
     def test_measurement(self):
         self.assertEqual(self.measure(0).eval(),
-                         (qast.LIB, 'MEASURE'))
+                         (qast.LIB, 'Measure'))
 
 
 if __name__ == '__main__':

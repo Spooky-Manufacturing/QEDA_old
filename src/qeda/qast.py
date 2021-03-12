@@ -6,7 +6,7 @@ from qeda.qast_primitives import CONFIG, SEL, LIB, QCODE
 
 config = CONFIG
 # Import gate primitives
-from qeda.qast_primitives import Int, Char, Real, String, BinaryOp, Component, UQGate, CQGate, CustomQGate
+from qeda.qast_primitives import End, Int, Char, Real, String, BinaryOp, Component, UQGate, CQGate, CustomQGate
 
 
 class OpenQASM():
