@@ -98,7 +98,6 @@ class Component:
                 QCODE[qid].append(self.footprint)
         except Exception as e:
             print("exception", e)
-            pass
 
     def eval(self):
         return self.footprint, QCODE
