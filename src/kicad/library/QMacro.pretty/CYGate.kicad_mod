@@ -1,5 +1,5 @@
 (module CY-Gate (layer F.Cu) (tedit 5E49C1FF)
-  (tags "Macro, CX, Quantum, Controlled")
+  (tags "Macro, CY, Quantum, Controlled")
   (fp_text reference CY** (at 0 5.715) (layer F.SilkS)
     (effects (font (size 1 1) (thickness 0.15)))
   )
