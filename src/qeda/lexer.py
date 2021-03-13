@@ -26,7 +26,7 @@ class Lexer():
         self.lexer.add('GATE', r'(?i)gate')
         # Gate primitives
         self.lexer.add('U', r'U')
-        self.lexer.add('CX', r'(?i)cx')
+        self.lexer.add('CX', r'(?i)c[xyzh]')
         # Punctuation
         self.lexer.add('PAREN_OPEN', r'\(')
         self.lexer.add('PAREN_CLOSE', r'\)')

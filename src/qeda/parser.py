@@ -116,10 +116,11 @@ class Parser():
             if p[0].name in ('U', 'u'):
                 V('U gate!')
                 return p
-            elif p[0].name in ('cx', 'CX'):
-                V("CX Gate")
+            elif p[0].value.upper() in ('CX', 'CY', 'CZ', 'CH'):
+                V("CX Gate: {}".format(p))
                 if len(p) == 5:
-                    return CX(p[1], p[3])
+                    gate = {'CX': CX, 'CY': CY, 'CZ': CZ, 'CH': CH}[p[0].value.upper()]
+                    return gate(p[1], p[3])
                 else:
                     return CX(p[1][0], p[1][1])
             elif p[0].name == 'ID':

@@ -140,19 +140,19 @@ class CX(CQGate):
         self._set_footprint('CXGate')
 
 
-class CYGate(CQGate):
+class CY(CQGate):
     def __init__(self, control, targets):
         CQGate.__init__(self, control, targets)
         self._set_footprint('CYGate')
 
 
-class CZGate(CQGate):
+class CZ(CQGate):
     def __init__(self, control, targets):
         CQGate.__init__(self, control, targets)
         self._set_footprint('CZGate')
 
 
-class CHGate(CQGate):
+class CH(CQGate):
     def __init__(self, control, targets):
         CQGate.__init__(self, control, targets)
         self._set_footprint('CHGate')
