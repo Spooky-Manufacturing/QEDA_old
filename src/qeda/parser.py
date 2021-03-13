@@ -121,7 +121,7 @@ class Parser():
                 if len(p) == 5:
                     return CX(p[1], p[3])
                 else:
-                    return CX(p[0][0], p[0][1])
+                    return CX(p[1][0], p[1][1])
             elif p[0].name == 'ID':
                 V('a', p)
                 if p[0].value.lower() == 'h':

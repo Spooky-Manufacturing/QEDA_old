@@ -1,5 +1,5 @@
 (module CZ-Gate (layer F.Cu) (tedit 5E49C1EA)
-  (tags "Macro, CX, Quantum, Controlled")
+  (tags "Macro, CZ, Quantum, Controlled")
   (fp_text reference CZ** (at 0 5.715) (layer F.SilkS)
     (effects (font (size 1 1) (thickness 0.15)))
   )

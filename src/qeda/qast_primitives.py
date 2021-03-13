@@ -10,9 +10,6 @@ QCODE = {}
 
 
 class End():
-    def __init__(self):
-        global QCODE
-
     def eval(self):
         return QCODE, 0
 
@@ -63,8 +60,6 @@ class Component:
     """
     def __init__(self):
         global QCODE
-        global SEL
-        global LIB
         self.footprint = None
         self.qid = None
 
@@ -77,7 +72,7 @@ class Component:
         """Adds the components to master dictionary"""
         try:
             # If the qid is of type Number we need to convert to integer
-            if type(qid) != type(1):
+            if not isinstance(qid, int):
                 qid = qid.eval()
             # If component is applied to all qubits
             if qid == -1:
@@ -87,7 +82,6 @@ class Component:
             elif qid == -2:
                 for key, value in QCODE.items():
                     QCODE[key].append(self.footprint)
-                pass
             # If the qubit isn't already listed, add new qubit
             # qcode = { 0: [], 1: [],...}
             elif qid not in QCODE:
@@ -98,7 +92,6 @@ class Component:
                 QCODE[qid].append(self.footprint)
         except Exception as e:
             print("exception", e)
-            pass
 
     def eval(self):
         return self.footprint, QCODE
@@ -135,12 +128,12 @@ class CQGate(Component):
 
     def set_targets(self):
         indicator = self.footprint + 'TGT'
-        if 'Int' in str(type(self.targets)):
+        if isinstance(self.targets, Int):
             self.targets.eval()
             self._set_target(self.targets, indicator)
         else:
             for target in self.targets:
-                if type(target) != type(int):
+                if not isinstance(target, int):
                     target.eval()
                 self._set_target(target, indicator)
 #    def eval(self):
