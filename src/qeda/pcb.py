@@ -43,9 +43,8 @@ class PCB:
         V("PCB INFO:")
         self.title = title
         self.comment1 = comment1
-        grid_orig = [0, 0]
-        V("Title: {}\nComment1: {}\nGrid Origin: {}".format(self.title, self.comment1, grid_orig))
-        self.setup = Setup(grid_origin=grid_orig)
+        V("Title: {}\nComment1: {}".format(self.title, self.comment1))
+        self.setup = Setup(grid_origin=(0, 0))
 
     def setup_verbosity(self):
         global V
@@ -244,29 +243,28 @@ class PCBBuilder:
 
     def _autoplace_(self):
         V("Running auto-placer")
-        pos = {
-            'X': 0,
-            'Y': 0}
-        cur_x = 0
-        cur_y = 0
+        # KiCad page always appears offset by 10, 10
+        offset = 13
+        cur_y = offset
         V("Mapping Qubits")
         for qubit, gates in self.qcode.items():
             V("Creating qubit {}".format(qubit))
-            # Iterate over qubits
+            # Iterate over qubits, set x pos, determine qubit centre-line
+            cur_x = offset
+            xcoords = []
+            ycentre = offset
             for i in range(len(gates)):
-                # Iterate over gates
                 V("Processing component {} of qubit {}".format(i, qubit))
                 V("Finding maximum geometry of component.")
                 x, y = self._find_maxes(gates[i])
                 V("Placing component.")
                 cur_x += x
-                pos['X'] = cur_x - x // 2
-                if y > cur_y:
-                    cur_y = y
-                self._place_component(gates[i], pos['X'], pos['Y'])
-            cur_x = 0
-            pos['X'] = cur_x
-            pos['Y'] += cur_y
+                xcoords.append(cur_x - x // 2)
+                if y > ycentre:
+                    ycentre = y
+            for i in range(len(gates)):
+                self._place_component(gates[i], xcoords[i], cur_y + ycentre // 2)
+            cur_y += ycentre
 
 
 if __name__ == '__main__':
