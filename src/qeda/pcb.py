@@ -35,14 +35,15 @@ class PCB:
         self.clearance = float(config[s]['clearance'])
         self.num_layers = int(config[s]['layers'])
         self.layers = []
-        self.page_type = [int(x) for x in config[s]['page_type'].split(',')]
+        page_type = config[s]['page_type']
+        self.page_type = [int(x) for x in page_type.split(',')] if ',' in page_type else page_type
         self.trace_width = config[s]['trace_width']
-        self.coords = [(0, 0), (10, 0), (10, 10), (0, 10)]
+        #self.coords = [(0, 0), (10, 0), (10, 10), (0, 10)]
         # PCB Info
         V("PCB INFO:")
         self.title = title
         self.comment1 = comment1
-        grid_orig = [int(x / 2) for x in self.page_type]
+        grid_orig = [0, 0]
         V("Title: {}\nComment1: {}\nGrid Origin: {}".format(self.title, self.comment1, grid_orig))
         self.setup = Setup(grid_origin=grid_orig)
 
@@ -198,29 +199,25 @@ class PCBBuilder:
         V("Verbosity setup on PCBBuilder complete")
 
     def _find_max_x(self, comp):
-        """Return the maximal X size of a component as an interger"""
+        """Return the maximal X size (width) of a component as an integer"""
         max_x = 0
-        geo = comp.geometry()
-        x = [each for each in geo]
-        for each in x:
+        for each in comp.geometry():
             if each.start is None and each.end is not None:
-                y = abs(0 - each.end[0])
+                x = abs(0 - each.end[0])
             elif each.end is None and each.start is not None:
-                y = abs(each.start)
+                x = abs(each.start)
             elif each.start == each.end is None:
                 pass
             else:
-                y = abs(each.start[0] - each.end[0])
-                if y > max_x:
-                    max_x = y
+                x = abs(each.start[0] - each.end[0])
+                if x > max_x:
+                    max_x = x
         return ceil(max_x)
 
     def _find_max_y(self, comp):
-        """Return the maximal X size of a component as an interger"""
+        """Return the maximal Y size (height) of a component as an integer"""
         max_y = 0
-        geo = comp.geometry()
-        x = [each for each in geo]
-        for each in x:
+        for each in comp.geometry():
             if each.start is None and each.end is not None:
                 y = abs(0 - each.end)
             if each.end is None and each.start is not None:
@@ -234,7 +231,7 @@ class PCBBuilder:
         return ceil(max_y)
 
     def _find_maxes(self, comp):
-        """Returns the maximal x and y value of a component (starting at 0,0)"""
+        """Returns the maximal x and y values of a component (starting at 0,0)"""
         x = self._find_max_x(comp)
         y = self._find_max_y(comp)
         return int(x), int(y)
@@ -259,13 +256,11 @@ class PCBBuilder:
             for i in range(len(gates)):
                 # Iterate over gates
                 V("Processing component {} of qubit {}".format(i, qubit))
-                # Find maxes
                 V("Finding maximum geometry of component.")
                 x, y = self._find_maxes(gates[i])
-                # Place component
                 V("Placing component.")
                 cur_x += x
-                pos['X'] = cur_x
+                pos['X'] = cur_x - x // 2
                 if y > cur_y:
                     cur_y = y
                 self._place_component(gates[i], pos['X'], pos['Y'])
