@@ -216,7 +216,7 @@ class PCBBuilder:
         return ceil(max_x)
 
     def _find_max_y(self, comp):
-        """Return the maximal X size of a component as an interger"""
+        """Return the maximal Y size of a component as an interger"""
         max_y = 0
         geo = comp.geometry()
         x = [each for each in geo]
